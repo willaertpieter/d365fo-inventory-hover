@@ -2,7 +2,7 @@
 
 Hold Alt and hover over an item number anywhere in Dynamics 365 Finance & Operations. A tooltip shows the stock per warehouse and the product details you care about, without leaving the page you're working on.
 
-**[Get it free on Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/d365fo-inventory-hover/kifigmgmdbkjkgogicoglafmceofdahe)** · [Privacy](PRIVACY.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md)
+**[Get it free on Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/d365fo-inventory-hover/kifigmgmdbkjkgogicoglafmceofdahe)** · [Watch the video tour](https://www.youtube.com/watch?v=SyV7vMDebmg) · [Privacy](PRIVACY.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md)
 
 ![The tooltip on a sales order line](store-assets/shot-1-hover.png)
 
