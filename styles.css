@@ -1,0 +1,232 @@
+.d365-inventory-tooltip {
+  position: fixed;
+  background: #fff;
+  border: 2px solid #0078d4;
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  z-index: 10000;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 12px;
+  min-width: 450px;
+  max-width: 650px;
+}
+
+.tooltip-header {
+  font-weight: 600;
+  color: #0078d4;
+  margin-bottom: 8px;
+  font-size: 12px;
+  border-bottom: 1px solid #e1e1e1;
+  padding-bottom: 6px;
+  line-height: 1.3;
+  word-wrap: break-word;
+}
+
+/* Product details (ReleasedProductsV2 fields) - sits between the header and the
+   inventory table. Capped in height so a large field selection scrolls rather
+   than pushing the quantity table off screen. */
+.tooltip-product-section {
+  margin: 0 0 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.tooltip-product-details {
+  display: grid;
+  gap: 2px 10px;
+  align-items: baseline;
+  max-height: 220px;
+  overflow-y: auto;
+  font-size: 11px;
+}
+
+.tooltip-product-details[data-layout="1col"] {
+  grid-template-columns: max-content minmax(0, 1fr);
+}
+
+.tooltip-product-details[data-layout="2col"] {
+  grid-template-columns: max-content minmax(0, 1fr) max-content minmax(0, 1fr);
+}
+
+.product-field-label {
+  color: #666;
+  white-space: nowrap;
+}
+
+.product-field-value {
+  color: #201f1e;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tooltip-product-company {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #8661c5;
+  margin-bottom: 4px;
+}
+
+.tooltip-product-note {
+  font-size: 10px;
+  color: #999;
+  font-style: italic;
+  margin-top: 4px;
+}
+
+.tooltip-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 11px;
+}
+
+.tooltip-table th {
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #d1d1d1;
+  padding: 4px 3px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tooltip-table td {
+  padding: 4px 3px;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 11px;
+}
+
+.tooltip-table .company {
+  font-weight: 600;
+  color: #333;
+}
+
+.tooltip-scope-badge {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #0078d4;
+  background: #eaf4fd;
+  border-radius: 10px;
+  padding: 2px 8px;
+  margin: -4px 0 8px;
+}
+
+.tooltip-table .warehouse {
+  font-weight: 500;
+  color: #333;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Product dimensions: Config, Color, Size, Style, Version. All styled alike and
+   share one class, since each is a short code shown under its own header. */
+.tooltip-table .dimension {
+  font-size: 10px;
+  color: #666;
+  max-width: 70px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tooltip-table .physical {
+  color: #201f1e;
+  font-weight: 700;
+  text-align: right;
+}
+
+.tooltip-table .available {
+  color: #107c10;
+  font-weight: 600;
+  text-align: right;
+}
+
+.tooltip-table .reserved {
+  color: #d13438;
+  font-weight: 500;
+  text-align: right;
+}
+
+.tooltip-table .ordered {
+  color: #0078d4;
+  font-weight: 500;
+  text-align: right;
+}
+
+.tooltip-table .on-order {
+  color: #8661c5;
+  font-weight: 500;
+  text-align: right;
+}
+
+/* Stands in for the quantity table when the item has product details but no
+   inventory records. Muted rather than alarming: for a non-stocked item this is
+   the expected result, not an error. */
+.tooltip-inventory-note {
+  font-size: 11px;
+  color: #b25f00;
+  background: #fff8f0;
+  border: 1px solid #f5e3cf;
+  border-radius: 4px;
+  padding: 6px 8px;
+  margin: 8px 0 0;
+}
+
+.tooltip-timestamp {
+  font-size: 10px;
+  color: #999;
+  text-align: right;
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.d365-inventory-tooltip.d365-inventory-tooltip-loading,
+.d365-inventory-tooltip.d365-inventory-tooltip-message {
+  min-width: 0;
+  max-width: 320px;
+}
+
+.tooltip-message {
+  color: #333;
+}
+
+.tooltip-message-error {
+  color: #d13438;
+}
+
+.tooltip-message-warning {
+  color: #b25f00;
+}
+
+.tooltip-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #333;
+  white-space: nowrap;
+}
+
+.tooltip-spinner {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  border: 2px solid #d1e6f7;
+  border-top-color: #0078d4;
+  border-radius: 50%;
+  animation: d365-inventory-spin 0.7s linear infinite;
+}
+
+@keyframes d365-inventory-spin {
+  to { transform: rotate(360deg); }
+}

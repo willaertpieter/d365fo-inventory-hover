@@ -1,0 +1,7 @@
+# Release packages are built from committed files and published with SHA-256
+# checksums (see scripts/package.js). LF everywhere means a checkout on any OS
+# produces byte-identical files, so anyone can reproduce those checksums.
+* text=auto eol=lf
+*.png binary
+*.zip binary
+*.mp4 binary

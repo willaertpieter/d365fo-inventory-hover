@@ -1,0 +1,111 @@
+/* D365 Finance & Operations, standard blue theme. Colours were sampled from
+   real screenshots (UI chrome only); sizes are CSS px at 125% scaling. */
+
+.d365 {
+  position: absolute; left: 0; top: 0; width: 1536px; height: 782px;
+  background: #faf9f8; color: #201f1e; overflow: hidden;
+  font-family: 'Segoe UI', sans-serif; font-size: 14px;
+}
+.d365 .ic, .edge .ic, .xi { font-family: 'Segoe Fluent Icons', 'Segoe MDL2 Assets'; font-style: normal; line-height: 1; display: inline-block; }
+
+/* navigation bar */
+.d-nav { position: absolute; left: 0; top: 0; width: 1536px; height: 34px; background: #11100f; color: #fff; display: flex; align-items: center; }
+.d-waffle { width: 34px; height: 34px; background: #3467e6; display: grid; grid-template-columns: repeat(3, 3px); grid-auto-rows: 3px; gap: 3px; place-content: center; }
+.d-waffle i { background: #fff; }
+.d-app { font-weight: 600; font-size: 14px; padding: 0 17px 0 18px; height: 26px; line-height: 26px; border-right: 1px solid #3b3a39; }
+.d-crumbs { display: flex; align-items: center; gap: 10px; padding-left: 24px; font-size: 13.5px; }
+.d-crumb-sep { font-size: 11px; }
+.d-nav-right { margin-left: auto; display: flex; align-items: center; height: 34px; padding-right: 2px; }
+.d-cmp { font-size: 13.5px; margin-right: 8px; }
+.d-nic { width: 34px; text-align: center; font-size: 16px; }
+.d-copilot { position: relative; width: 34px; height: 16px; }
+.d-copilot::before { content: ''; position: absolute; left: 10px; top: 0; width: 14px; height: 14px; border: 1.5px solid #fff; border-radius: 4px 9px 4px 9px; transform: skewX(-8deg); }
+.d-nsep { width: 1px; height: 34px; background: #3b3a39; margin: 0 3px; }
+.d-avatar { width: 26px; height: 26px; border-radius: 50%; background: #c7e0f4; color: #201f1e; font-size: 11px; font-weight: 600; display: grid; place-items: center; margin-left: 6px; }
+
+/* rails */
+.d-rail { position: absolute; left: 0; top: 34px; width: 37px; bottom: 0; background: #f3f2f1; border-right: 1px solid #e1dfdd; display: flex; flex-direction: column; align-items: center; padding-top: 8px; gap: 13px; font-size: 16px; }
+.d-rrail { position: absolute; right: 0; top: 34px; width: 22px; bottom: 0; background: #f3f2f1; border-left: 1px solid #e1dfdd; display: flex; justify-content: center; padding-top: 10px; font-size: 13px; }
+
+/* main area */
+.d-main { position: absolute; left: 38px; right: 23px; top: 34px; bottom: 0; padding: 8px 8px 0 9px; overflow: hidden; }
+.d-ap { background: #fff; border-radius: 6px; box-shadow: 0 0 2px rgba(0,0,0,.12), 0 2px 4px rgba(0,0,0,.08); }
+.ap-row { height: 30px; display: flex; align-items: center; padding: 0 4px 0 9px; white-space: nowrap; }
+.ap-ic { color: #3467e6; font-size: 15px; }
+.ap-back { font-size: 16px; margin-right: 12px; }
+.ap-menu { margin-right: 4px; }
+.ap-sep { width: 1px; height: 18px; background: #e1dfdd; margin: 0 6px; }
+.ap-i { display: inline-flex; align-items: center; gap: 5px; padding: 0 7px; }
+.ap-i.disabled, .ap-i.disabled .ap-ic { color: #a19f9d; }
+.ap-tab { padding: 0 9px; height: 30px; display: inline-flex; align-items: center; position: relative; }
+.ap-tab.active::after { content: ''; position: absolute; left: 7px; right: 7px; bottom: 0; height: 2px; background: #3467e6; }
+.ap-chev { font-size: 10px; margin-left: 5px; }
+.ap-find { margin-left: 8px; }
+.ap-right { margin-left: auto; display: flex; align-items: center; gap: 17px; padding-right: 8px; }
+.ap-diamond { width: 11px; height: 11px; border: 1.5px solid #3467e6; transform: rotate(45deg); border-radius: 2px; margin: 0 2px; }
+.ap-office { width: 12px; height: 15px; border: 1.5px solid #3467e6; border-radius: 2px 5px 5px 2px; border-left-width: 4px; }
+.ap-attach { position: relative; }
+.ap-attach b { position: absolute; right: -7px; top: -8px; background: #3467e6; color: #fff; font-size: 9px; border-radius: 50%; width: 13px; height: 13px; display: grid; place-items: center; font-weight: 600; }
+.ap-ribbon { display: flex; align-items: stretch; padding: 10px 14px 16px 26px; position: relative; }
+.ap-group { padding: 0 18px; }
+.ap-gtitle { font-weight: 600; text-align: center; margin-bottom: 5px; }
+.ap-gcols { display: flex; gap: 20px; }
+.ap-gcol { display: flex; flex-direction: column; gap: 2px; white-space: nowrap; }
+.ap-gcol .disabled { color: #a19f9d; }
+.ap-gsep { width: 1px; background: #e1dfdd; margin: 2px 0 4px; }
+.ap-collapse { position: absolute; right: 14px; bottom: 6px; font-size: 11px; color: #605e5c; }
+
+/* page header */
+.d-content { display: flex; gap: 12px; }
+.d-body { flex: 1; min-width: 0; padding: 0 3px; }
+.d-caption { margin-top: 12px; height: 20px; display: flex; align-items: center; gap: 7px; }
+.d-caption.plain { gap: 0; white-space: pre; }
+.d-cap-link { color: #3467e6; }
+.d-cap-chev { font-size: 11px; }
+.d-title { display: flex; justify-content: space-between; align-items: baseline; font-size: 24px; font-weight: 600; margin-top: 7px; line-height: 32px; }
+.d-title-right { font-size: 14px; font-weight: 400; margin-right: 58px; }
+.d-tabs { display: flex; gap: 10px; margin-top: 12px; }
+.d-tab { padding: 0 4px 7px; color: #605e5c; }
+.d-tab.active { color: #201f1e; box-shadow: inset 0 -2px 0 #3467e6; }
+.d-viewtitle { font-size: 26px; font-weight: 600; margin-top: 8px; }
+.d-vt-chev { font-size: 12px; margin-left: 7px; vertical-align: middle; }
+.d-filter { margin-top: 9px; width: 176px; height: 24px; border: 1px solid #605e5c; border-radius: 3px; display: flex; align-items: center; gap: 6px; padding-left: 6px; color: #605e5c; background: #fff; }
+.d-filter-ic { font-size: 12px; }
+
+/* cards, fasttabs, sections */
+.d-card { background: #fff; border-radius: 6px; box-shadow: 0 0 2px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.06); margin-top: 9px; }
+.d-ft { height: 34px; display: flex; align-items: center; justify-content: space-between; padding: 0 8px 0 10px; font-weight: 600; }
+.d-ft-right { display: flex; align-items: center; gap: 12px; font-weight: 400; }
+.d-ft-btn { width: 26px; height: 26px; border: 1px solid #8a8886; border-radius: 4px; display: grid; place-items: center; font-size: 12px; }
+.d-sec-h { padding: 9px 10px; font-weight: 600; border-bottom: 1px solid #edebe9; }
+.d-tb { display: flex; gap: 17px; padding: 7px 10px 6px; color: #3467e6; white-space: nowrap; }
+.d-tb span { display: inline-flex; align-items: center; gap: 4px; }
+.d-tb .disabled, .d-tb .disabled .ic { color: #a19f9d; }
+.tb-ic { font-size: 13px; }
+.tb-chev { font-size: 10px; margin-left: 3px; }
+
+/* grid */
+.d-grid { margin: 0 8px 8px; border: 1px solid #edebe9; }
+.d-section > .d-grid:first-child { margin-top: 8px; }
+.d-gh { display: grid; height: 29px; align-items: center; font-weight: 600; border-bottom: 1px solid #e1dfdd; white-space: nowrap; background: #fff; }
+.d-gh > span, .d-grow > span { padding: 0 8px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.d365 .r { text-align: right; }
+.d-radio { width: 15px; height: 15px; border: 1px solid #323130; border-radius: 50%; padding: 0 !important; justify-self: center; box-sizing: border-box; }
+.d-gmore { text-align: right; padding-right: 10px !important; font-weight: 700; }
+.d-gbody { position: relative; background: #fff; }
+.d-grow { display: grid; height: 27px; align-items: center; position: relative; }
+.d-grow.sel { background: #edebe9; }
+.d-grow.sel::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: #3467e6; }
+.d-grow.hover:not(.sel) { background: #f5f4f4; }
+.d-grow a { color: #3467e6; }
+.d-grow.sel a { color: #254db2; }
+.d-grow a.hot { text-decoration: underline; color: #254db2; }
+.d365 .muted { color: #a19f9d; }
+.d-pencil { font-size: 12px; color: #a19f9d; margin-left: 12px; }
+.d-hscroll { position: absolute; left: 6px; right: 6px; bottom: 5px; height: 7px; }
+.d-hscroll i { display: block; height: 7px; border-radius: 4px; background: #c2c2c2; }
+
+/* factbox */
+.d-factbox { width: 206px; flex: none; background: #fff; border-radius: 6px; box-shadow: 0 0 2px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.06); margin-top: 9px; align-self: flex-start; padding: 12px 0 8px; }
+.d-fb-title { font-size: 19px; font-weight: 600; padding: 0 12px 10px; border-bottom: 1px solid #e1dfdd; }
+.d-fb-row { display: flex; justify-content: space-between; align-items: center; padding: 0 8px 0 12px; height: 34px; border-bottom: 1px solid #e1dfdd; font-weight: 600; }

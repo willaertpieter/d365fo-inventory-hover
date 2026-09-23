@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>D365FO Inventory Hover - thumbnail</title>
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="d365.css">
+<link rel="stylesheet" href="stage.css">
+<style>
+  html, body { width: 1280px; height: 720px; overflow: hidden; margin: 0; }
+  .thumb { position: absolute; inset: 0; }
+  .shot { position: absolute; left: 560px; top: 70px; width: 1536px; height: 632px; transform: scale(0.78); transform-origin: 0 0;
+          border-radius: 14px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.15); }
+  .shot .d365 { left: -30px; top: -150px; }
+  .shot .d365-inventory-tooltip { transform: scale(1.45); transform-origin: 0 0; box-shadow: 0 20px 50px rgba(0,0,0,.35); }
+  .copy { position: absolute; left: 64px; top: 92px; width: 560px; color: #fff; font-family: 'Segoe UI Variable Display', 'Segoe UI', sans-serif; }
+  .brand { display: flex; align-items: center; gap: 14px; font-size: 26px; font-weight: 600; color: #cfe3f7; }
+  .brand img { width: 58px; height: 58px; }
+  h1 { margin: 34px 0 0; font-size: 92px; line-height: 0.98; font-weight: 800; letter-spacing: -2px; }
+  h1 em { font-style: normal; color: #ffc83d; }
+  .sub { margin-top: 26px; font-size: 30px; font-weight: 600; color: #e8f3ff; display: flex; gap: 12px; flex-wrap: wrap; }
+  .sub span { background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.25); border-radius: 999px; padding: 6px 18px; }
+  .sub span.free { background: #107c10; border-color: #107c10; }
+  .key { position: absolute; left: 64px; bottom: 58px; display: flex; align-items: center; gap: 16px; color: #cfe3f7; font: 600 30px 'Segoe UI', sans-serif; }
+  .key .keycap { min-width: 96px; height: 60px; font-size: 28px; border-radius: 12px; }
+</style>
+</head>
+<body>
+<div class="thumb gfx">
+  <div class="shot"><div class="stagebox"></div></div>
+  <div class="copy">
+    <div class="brand"><img src="../../icons/icon-128.png">D365FO Inventory Hover</div>
+    <h1>See stock<br><em>on hover</em></h1>
+    <div class="sub"><span class="free">FREE</span><span>Privacy-safe</span></div>
+  </div>
+  <div class="key"><span class="keycap down">Alt</span>+ hover any item number</div>
+</div>
+<script src="engine.js"></script>
+<script src="components.js"></script>
+<script src="data.js"></script>
+<script>
+  // A real D365 page and the extension's real tooltip, framed for the thumbnail.
+  const page = d365Page(SALES_PAGE);
+  const box = document.querySelector('.stagebox');
+  box.appendChild(page.el);
+  page.hoverLink.set(0, [0, 'item']);
+  page.update(1);
+  const link = page.link(0, 'item');
+  const a = link.getBoundingClientRect(), b = page.el.getBoundingClientRect();
+  const tip = buildTooltip(TIPS.espresso);
+  tip.style.left = (a.left - b.left) / 0.78 + 30 + 'px';
+  tip.style.top = (a.bottom - b.top) / 0.78 + 4 + 'px';
+  page.el.appendChild(tip);
+  document.fonts.ready.then(() => { window.__ready = true; });
+</script>
+</body>
+</html>

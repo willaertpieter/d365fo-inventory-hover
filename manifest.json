@@ -1,0 +1,88 @@
+{
+  "manifest_version": 3,
+  "name": "D365FO Inventory Hover",
+  "version": "1.1.1",
+  "description": "Hover over item numbers to see warehouse inventory levels and selected released-product fields",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "permissions": [
+    "storage",
+    "scripting",
+    "activeTab"
+  ],
+  "optional_host_permissions": [
+    "https://*/*"
+  ],
+  "host_permissions": [
+    "https://*.operations.dynamics.com/*",
+    "https://*.sandbox.operations.dynamics.com/*",
+    "https://*.operations.eu.dynamics.com/*",
+    "https://*.sandbox.operations.eu.dynamics.com/*",
+    "https://*.operations.fr.dynamics.com/*",
+    "https://*.sandbox.operations.fr.dynamics.com/*",
+    "https://*.operations.no.dynamics.com/*",
+    "https://*.sandbox.operations.no.dynamics.com/*",
+    "https://*.operations.sa.dynamics.com/*",
+    "https://*.sandbox.operations.sa.dynamics.com/*",
+    "https://*.operations.ch.dynamics.com/*",
+    "https://*.sandbox.operations.ch.dynamics.com/*",
+    "https://*.operations.uae.dynamics.com/*",
+    "https://*.sandbox.operations.uae.dynamics.com/*",
+    "https://*.operations.gov.microsoftdynamics.us/*",
+    "https://*.sandbox.operations.gov.microsoftdynamics.us/*",
+    "https://*.operations.high.microsoftdynamics.us/*",
+    "https://*.sandbox.operations.high.microsoftdynamics.us/*",
+    "https://*.cloudax.dynamics.com/*",
+    "https://*.axcloud.dynamics.com/*",
+    "https://*.cloud.onebox.dynamics.com/*"
+  ],
+  "options_page": "options.html",
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'none'"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.operations.dynamics.com/*",
+        "https://*.sandbox.operations.dynamics.com/*",
+        "https://*.operations.eu.dynamics.com/*",
+        "https://*.sandbox.operations.eu.dynamics.com/*",
+        "https://*.operations.fr.dynamics.com/*",
+        "https://*.sandbox.operations.fr.dynamics.com/*",
+        "https://*.operations.no.dynamics.com/*",
+        "https://*.sandbox.operations.no.dynamics.com/*",
+        "https://*.operations.sa.dynamics.com/*",
+        "https://*.sandbox.operations.sa.dynamics.com/*",
+        "https://*.operations.ch.dynamics.com/*",
+        "https://*.sandbox.operations.ch.dynamics.com/*",
+        "https://*.operations.uae.dynamics.com/*",
+        "https://*.sandbox.operations.uae.dynamics.com/*",
+        "https://*.operations.gov.microsoftdynamics.us/*",
+        "https://*.sandbox.operations.gov.microsoftdynamics.us/*",
+        "https://*.operations.high.microsoftdynamics.us/*",
+        "https://*.sandbox.operations.high.microsoftdynamics.us/*",
+        "https://*.cloudax.dynamics.com/*",
+        "https://*.axcloud.dynamics.com/*",
+        "https://*.cloud.onebox.dynamics.com/*"
+      ],
+      "js": ["content-product-fields.js", "content.js"],
+      "css": ["styles.css"],
+      "all_frames": true
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "D365FO Inventory Hover",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  }
+}

@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D365FO Inventory Hover - Settings</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #faf9f8;
+      color: #333;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 28px 24px 60px;
+    }
+
+    h1 {
+      font-size: 20px;
+      color: #0078d4;
+      border-bottom: 2px solid #0078d4;
+      padding-bottom: 10px;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      color: #666;
+      font-size: 12px;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #edebe9;
+      border-radius: 6px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-size: 15px;
+      color: #201f1e;
+      margin-bottom: 4px;
+    }
+
+    .help-text {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 14px;
+    }
+
+    button {
+      background: #0078d4;
+      color: #fff;
+      border: none;
+      padding: 7px 14px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    button:hover:not(:disabled) { background: #106ebe; }
+    button:disabled { opacity: 0.4; cursor: default; }
+
+    button.secondary {
+      background: #fff;
+      color: #333;
+      border: 1px solid #d1d1d1;
+    }
+
+    button.secondary:hover:not(:disabled) { background: #f3f2f1; }
+
+    select, input[type="text"], input[type="search"], textarea {
+      font-family: inherit;
+      font-size: 12px;
+      padding: 6px 8px;
+      border: 1px solid #d1d1d1;
+      border-radius: 4px;
+      background: #fff;
+      color: #333;
+    }
+
+    select:focus, input:focus, textarea:focus {
+      outline: 2px solid #0078d4;
+      outline-offset: -1px;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-line {
+      font-size: 12px;
+      color: #666;
+      margin-top: 10px;
+      min-height: 18px;
+    }
+
+    .status-line.success { color: #107c10; }
+    .status-line.error { color: #d13438; }
+
+    /* ---- two-pane field picker ---- */
+
+    .picker {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+
+    .pane-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #666;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .pane-count {
+      font-weight: 500;
+      text-transform: none;
+      letter-spacing: 0;
+      color: #999;
+    }
+
+    .field-list {
+      border: 1px solid #edebe9;
+      border-radius: 4px;
+      height: 340px;
+      overflow-y: auto;
+      background: #fff;
+    }
+
+    .field-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-bottom: 1px solid #f7f6f5;
+    }
+
+    .field-row:last-child { border-bottom: none; }
+    .field-row:hover { background: #f7f9fc; }
+
+    .field-main {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .field-label {
+      display: block;
+      color: #201f1e;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .field-name {
+      display: block;
+      font-family: Consolas, 'Courier New', monospace;
+      font-size: 10px;
+      color: #999;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .field-type {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      color: #666;
+      background: #f3f2f1;
+      border-radius: 8px;
+      padding: 1px 7px;
+      flex-shrink: 0;
+    }
+
+    .field-btn {
+      background: #fff;
+      border: 1px solid #d1d1d1;
+      color: #333;
+      padding: 2px 8px;
+      font-size: 12px;
+      line-height: 1.4;
+      flex-shrink: 0;
+    }
+
+    .field-btn:hover:not(:disabled) { background: #edebe9; }
+    .field-btn.remove { color: #d13438; }
+    .field-btn.remove:hover:not(:disabled) { background: #fed9cc; }
+
+    .field-rename {
+      width: 100%;
+      font-size: 12px;
+      padding: 3px 6px;
+      border: 1px solid transparent;
+      border-radius: 3px;
+      background: transparent;
+    }
+
+    .field-rename:hover { border-color: #d1d1d1; background: #fff; }
+
+    .empty-state {
+      padding: 24px 16px;
+      text-align: center;
+      color: #999;
+      font-size: 12px;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .toggle-row input[type="checkbox"] {
+      margin-top: 2px;
+      width: 16px;
+      height: 16px;
+      accent-color: #0078d4;
+      flex-shrink: 0;
+    }
+
+    .qty-col-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 10px;
+      background: #f7f6f5;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      max-width: 420px;
+    }
+
+    .qty-col-row input[type="checkbox"] {
+      accent-color: #0078d4;
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+
+    .qty-col-label { flex: 1; }
+
+    details {
+      margin-top: 16px;
+      border-top: 1px solid #f0f0f0;
+      padding-top: 14px;
+    }
+
+    summary {
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      color: #0078d4;
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      margin-top: 10px;
+      font-family: Consolas, 'Courier New', monospace;
+      font-size: 11px;
+      resize: vertical;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <h1>D365FO Inventory Hover</h1>
+    <div class="subtitle">Settings for the ALT+hover tooltip. Changes apply to the next lookup - use <em>Refresh inventory data</em> in the toolbar popup for results already cached.</div>
+
+    <!-- ---------------- Quantity columns ---------------- -->
+    <div class="card">
+      <h2>Inventory quantities</h2>
+      <div class="help-text">
+        Which quantity columns appear in the tooltip table, and in what order.
+        Physical = actual on-hand quantity, regardless of reservations.
+      </div>
+      <div id="quantity-columns-list"></div>
+    </div>
+
+    <!-- ---------------- Product fields ---------------- -->
+    <div class="card">
+      <h2>Product details</h2>
+      <div class="help-text">
+        Pick fields from the <code>ReleasedProductsV2</code> entity to show above the inventory table.
+        The field list is read from the environment itself, so extension fields (anything your
+        implementation added on top of standard D365) show up here automatically.
+        Your selection is shared across environments - fields an environment doesn't have are
+        skipped for that environment instead of breaking the lookup.
+      </div>
+
+      <div class="row">
+        <label for="env-select" style="font-weight: 600;">Environment</label>
+        <select id="env-select" style="min-width: 380px;"></select>
+        <button id="btn-refresh-fields" class="secondary">Refresh fields</button>
+      </div>
+      <div class="status-line" id="env-status"></div>
+
+      <div class="picker">
+        <div>
+          <div class="pane-title">
+            <span>Available fields</span>
+            <span class="pane-count" id="available-count"></span>
+          </div>
+          <input type="search" id="field-search" placeholder="Search fields (e.g. group, ALT, date)" style="width: 100%; margin-bottom: 8px;">
+          <div class="field-list" id="available-list"></div>
+        </div>
+
+        <div>
+          <div class="pane-title">
+            <span>Shown in tooltip</span>
+            <span class="pane-count" id="selected-count"></span>
+          </div>
+          <div class="row" style="margin-bottom: 8px; justify-content: space-between;">
+            <span class="help-text" style="margin: 0;">Edit a name to relabel it in the tooltip.</span>
+            <button id="btn-restore-defaults" class="secondary">Restore defaults</button>
+          </div>
+          <div class="field-list" id="selected-list"></div>
+        </div>
+      </div>
+
+      <div style="margin-top: 16px;">
+        <label class="toggle-row" for="chk-hide-empty">
+          <input type="checkbox" id="chk-hide-empty">
+          <span>
+            Hide empty fields
+            <div class="help-text" style="margin: 0;">A typical released product leaves most of its 285 fields blank or zero. With this off, they show as &ndash;.</div>
+          </span>
+        </label>
+
+        <div class="row" style="margin-top: 6px;">
+          <label for="layout-select" style="font-weight: 600;">Layout</label>
+          <select id="layout-select">
+            <option value="2col">Two columns (compact)</option>
+            <option value="1col">One column (long values)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="status-line" id="fields-status"></div>
+
+      <details>
+        <summary>Share this configuration</summary>
+        <div class="help-text" style="margin-top: 10px;">
+          Copy this to hand your field setup to a colleague, or paste theirs in and apply it.
+        </div>
+        <textarea id="config-json" spellcheck="false"></textarea>
+        <div class="row" style="margin-top: 8px;">
+          <button id="btn-copy-config" class="secondary">Copy</button>
+          <button id="btn-apply-config">Apply pasted configuration</button>
+        </div>
+      </details>
+    </div>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>

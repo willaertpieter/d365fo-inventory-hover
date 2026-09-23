@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Store screenshot 2</title>
+<!-- The real extension stylesheet, so the tooltip below is pixel-accurate -->
+<link rel="stylesheet" href="../styles.css">
+<style>
+  html, body { margin: 0; padding: 0; width: 1280px; height: 800px; overflow: hidden; }
+  body { font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Arial, sans-serif; background: #faf9f8; }
+
+  .caption {
+    height: 92px; background: #0b3d66; color: #fff;
+    display: flex; flex-direction: column; justify-content: center; padding: 0 44px;
+  }
+  .caption h1 { margin: 0; font-size: 26px; font-weight: 600; letter-spacing: -0.2px; }
+  .caption p { margin: 6px 0 0; font-size: 15px; color: #b9d4ea; }
+
+  /* Neutral stand-in for an order-line page. Deliberately generic: no vendor
+     branding, no logos, synthetic data throughout. */
+  .page { padding: 26px 44px 0; }
+  .crumbs { font-size: 12px; color: #888; margin-bottom: 10px; }
+  .crumbs b { color: #444; font-weight: 600; }
+  .title { font-size: 21px; font-weight: 600; color: #201f1e; margin-bottom: 18px; }
+  .panel { border: 1px solid #e6e4e2; border-radius: 4px; background: #fff; }
+  .panel-head { font-size: 13px; font-weight: 600; color: #333; padding: 10px 14px; border-bottom: 1px solid #edebe9; }
+
+  table.grid { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.grid th {
+    text-align: left; font-weight: 600; color: #605e5c; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.4px;
+    padding: 9px 14px; border-bottom: 1px solid #edebe9; background: #faf9f8;
+  }
+  table.grid td { padding: 10px 14px; border-bottom: 1px solid #f5f4f3; color: #323130; }
+  table.grid td.num { text-align: right; }
+  table.grid a { color: #0f6cbd; text-decoration: none; }
+  table.grid tr.hot td { background: #eff6fc; }
+
+  /* Cursor + key chip, to show the interaction at a glance */
+  .cursor { position: absolute; left: 112px; top: 389px; width: 20px; height: 26px; }
+  .keychip {
+    position: absolute; left: 196px; top: 387px;
+    background: #201f1e; color: #fff; font-size: 11px; font-weight: 700;
+    letter-spacing: 0.6px; padding: 4px 9px; border-radius: 4px;
+    box-shadow: 0 2px 6px rgba(0,0,0,.28);
+  }
+
+  /* styles.css positions the real tooltip with position:fixed at runtime */
+  .d365-inventory-tooltip { position: absolute !important; left: 122px; top: 407px; }
+</style>
+</head>
+<body>
+  <div class="caption">
+    <h1>Columns that match the item</h1>
+    <p>Colour, size, style, configuration and version appear only when the item actually uses them.</p>
+  </div>
+
+  <div class="page">
+    <div class="crumbs">Sales and marketing &nbsp;&rsaquo;&nbsp; Orders &nbsp;&rsaquo;&nbsp; <b>SO-100042</b></div>
+    <div class="title">Sales order lines</div>
+
+    <div class="panel">
+      <div class="panel-head">Lines</div>
+      <table class="grid">
+        <tr><th>Item number</th><th>Product name</th><th>Site</th><th>Warehouse</th><th class="num">Quantity</th><th>Unit</th></tr>
+        <tr><td><a href="#">ITEM-100388</a></td><td>Mounting bracket, steel</td><td>SITE-1</td><td>MAIN</td><td class="num">24.00</td><td>pcs</td></tr>
+        <tr><td><a href="#">ITEM-100421</a></td><td>Sealant compound, 5 L</td><td>SITE-1</td><td>MAIN</td><td class="num">6.00</td><td>pcs</td></tr>
+        <tr><td><a href="#">ITEM-100455</a></td><td>Hex bolt M8 x 40</td><td>SITE-1</td><td>WH001</td><td class="num">500.00</td><td>pcs</td></tr>
+        <tr class="hot"><td><a href="#">ITEM-100470</a></td><td>Work jacket, lined</td><td>SITE-2</td><td>WH002</td><td class="num">120.00</td><td>pcs</td></tr>
+        <tr><td><a href="#">ITEM-100512</a></td><td>Assembly kit, complete</td><td>SITE-2</td><td>MAIN</td><td class="num">8.00</td><td>pcs</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <svg class="cursor" viewBox="0 0 20 26"><path d="M2 1 L2 20 L7 15.5 L10.5 23.5 L13.5 22 L10 14.5 L16.5 14.5 Z" fill="#fff" stroke="#000" stroke-width="1.4"/></svg>
+  <div class="keychip">ALT</div>
+
+  <!-- Markup mirrors exactly what content.js builds at runtime -->
+  <div class="d365-inventory-tooltip">
+    <div class="tooltip-header">ITEM-100470 - Work jacket, lined</div>
+
+    <div class="tooltip-product-section">
+      <div class="tooltip-product-details" data-layout="2col">
+        <span class="product-field-label">Inventory unit</span><span class="product-field-value">pcs</span>
+        <span class="product-field-label">Cost group</span><span class="product-field-value">DIRECT</span>
+        <span class="product-field-label">Item model group</span><span class="product-field-value">FIFO</span>
+        <span class="product-field-label">Primary vendor</span><span class="product-field-value">VEND-2210</span>
+        <span class="product-field-label">Coverage group</span><span class="product-field-value">MIN-MAX</span>
+        <span class="product-field-label">Tax group</span><span class="product-field-value">STD</span>
+      </div>
+    </div>
+
+    <table class="tooltip-table">
+      <tr><th>Warehouse</th><th>Color</th><th>Size</th><th>Physical</th><th>Available</th><th>Reserved</th><th>Ordered</th><th>On Order</th></tr>
+      <tr><td class="warehouse">MAIN</td><td class="dimension">Black</td><td class="dimension">L</td><td class="physical">96</td><td class="available">88</td><td class="reserved">8</td><td class="ordered">0</td><td class="on-order">0</td></tr>
+      <tr><td class="warehouse">MAIN</td><td class="dimension">Black</td><td class="dimension">XL</td><td class="physical">42</td><td class="available">42</td><td class="reserved">0</td><td class="ordered">120</td><td class="on-order">0</td></tr>
+      <tr><td class="warehouse">MAIN</td><td class="dimension">Navy</td><td class="dimension">L</td><td class="physical">15</td><td class="available">15</td><td class="reserved">0</td><td class="ordered">0</td><td class="on-order">0</td></tr>
+      <tr><td class="warehouse">WH002</td><td class="dimension">Navy</td><td class="dimension">XL</td><td class="physical">0</td><td class="available">0</td><td class="reserved">0</td><td class="ordered">0</td><td class="on-order">240</td></tr>
+      <tr><td class="warehouse">WH002</td><td class="dimension">Black</td><td class="dimension">-</td><td class="physical">8</td><td class="available">8</td><td class="reserved">0</td><td class="ordered">0</td><td class="on-order">0</td></tr>
+    </table>
+
+    <div class="tooltip-timestamp">14:24:49</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>D365FO Inventory Hover - video stage</title>
+<!-- The extension's real stylesheet: the tooltips in the video are the product's own markup and CSS. -->
+<link rel="stylesheet" href="../../styles.css">
+<link rel="stylesheet" href="d365.css">
+<link rel="stylesheet" href="stage.css">
+</head>
+<body>
+<div id="stage"></div>
+<script src="engine.js"></script>
+<script src="components.js"></script>
+<script src="data.js"></script>
+<script src="scenes.js"></script>
+<script>
+  initStage().catch(e => { window.__error = String(e && e.stack || e); console.error(e); });
+</script>
+</body>
+</html>

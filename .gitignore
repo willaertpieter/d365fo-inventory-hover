@@ -1,0 +1,14 @@
+# Convenience copies of the store screenshots at the working-folder root.
+# The tracked originals are in store-assets/ beside the HTML they render from.
+/shot-*.png
+
+# Local scratch / packaging output
+*.zip
+node_modules/
+.DS_Store
+
+# Release packages (scripts/package.js)
+dist/
+
+# Reference screenshots from real customer environments - never commit or publish
+/InventoryHover_*.png
