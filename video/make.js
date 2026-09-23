@@ -11,7 +11,8 @@ const path = require('path');
 const { execFileSync, spawnSync } = require('child_process');
 const { BUILD_DIR, OUTPUT_DIR, VIDEO_DIR, ffmpeg, ensureDir, formatTimestamp } = require('./lib');
 
-const STORE_LINK = process.env.STORE_LINK || '<add your Microsoft Edge Add-ons link here>';
+const STORE_LINK = process.env.STORE_LINK || 'https://microsoftedge.microsoft.com/addons/detail/d365fo-inventory-hover/kifigmgmdbkjkgogicoglafmceofdahe';
+const SOURCE_LINK = 'https://github.com/willaertpieter/d365fo-inventory-hover';
 const NAME = 'D365FO-Inventory-Hover';
 const steps = process.argv.slice(2);
 const want = s => steps.length === 0 || steps.includes(s);
@@ -108,6 +109,7 @@ Stop leaving the page to check stock in Dynamics 365 Finance & Operations. Hold 
 ⚙️ No setup: recognizes Microsoft-hosted F&O environments (production, sandbox, cloud-hosted dev) in every region Microsoft publishes; any other address can be enabled with one click
 
 👉 Get it on Microsoft Edge Add-ons: ${STORE_LINK}
+🔍 Open source (MIT): read the code and the privacy policy at ${SOURCE_LINK}
 
 CHAPTERS
 ${chapterText}

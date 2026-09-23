@@ -2,6 +2,8 @@
 
 Hover over item numbers on any D365 Finance & Operations page to see warehouse inventory levels — no extra clicks, no navigating away from what you're doing.
 
+**[Get it free on Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/d365fo-inventory-hover/kifigmgmdbkjkgogicoglafmceofdahe)** · [Privacy](PRIVACY.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md)
+
 ## Features
 
 - ✅ Detect item numbers on any D365 F&O page, targeted at item/product fields specifically (not order numbers, warehouse codes, batch numbers, etc.)
@@ -36,6 +38,10 @@ This extension runs inside an authenticated F&O session, so "trust me" isn't goo
 Organisations can pin or restrict extensions with Microsoft Edge policies (`ExtensionSettings`, `ExtensionInstallAllowlist`, `ExtensionInstallForcelist`), or build and distribute a reviewed version from source themselves.
 
 ## Installation
+
+### Microsoft Edge (recommended)
+
+Install from the [Microsoft Edge Add-ons store](https://microsoftedge.microsoft.com/addons/detail/d365fo-inventory-hover/kifigmgmdbkjkgogicoglafmceofdahe), then pin the icon to your toolbar. Store updates are built from tagged releases; see [SECURITY.md](SECURITY.md#checking-a-release) to check that your installed copy matches the source.
 
 ### Chrome / Edge (Load unpacked)
 

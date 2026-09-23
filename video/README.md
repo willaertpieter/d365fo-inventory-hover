@@ -14,8 +14,8 @@ line of narration or a scene and re-run one command.
 | `thumbnail.png` | 1280x720 custom thumbnail |
 | `youtube-description.txt` | Title, description with chapter timestamps, and tags |
 
-Before publishing, put the real Microsoft Edge Add-ons link in the description: either edit
-the text file, or rebuild it with `STORE_LINK=https://... node make.js extras`.
+The description links to the Edge Add-ons listing and the GitHub repository. To point it
+elsewhere, rebuild it with `STORE_LINK=https://... node make.js extras`.
 
 ## How it's built
 
