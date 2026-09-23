@@ -4,7 +4,7 @@ Every release, what changed and whether permissions changed. Releases are tagged
 in git; each store package is built from its tag with `scripts/package.js` (see
 [SECURITY.md](SECURITY.md#checking-a-release)).
 
-## 1.1.1 (unreleased)
+## 1.1.1 (2026-09-23)
 
 Transparency release, plus one fix. **No new permissions**.
 
