@@ -1,9 +1,10 @@
 https://contoso.sandbox.operations.dynamics.com/data/ReleasedProductsV2?cross-company=true&$top=3
 
 # SANITISED SAMPLE - every value in this file is synthetic.
-# Property names and value shapes are preserved (285 properties including the
-# CTS* extension fields, empty strings, zeros, and D365's 1900-01-01 null-date
-# sentinel) so it exercises the same code paths as a real response.
+# Property names and value shapes are preserved (275 properties: the standard
+# fields plus two CTS* extension fields, empty strings, zeros, and D365's
+# 1900-01-01 null-date sentinel) so it exercises the same code paths as a real
+# response. Fields from third-party add-ons were removed.
 # The extension does NOT read this file - field discovery queries the live
 # environment. It exists only as a fixture for tests/.
 
@@ -284,18 +285,8 @@ https://contoso.sandbox.operations.dynamics.com/data/ReleasedProductsV2?cross-co
       "RevRecRevenueRecognitionEnabled": "No",
       "RevRecRevenueType": "Essential",
       "BasePricePurchase": "No",
-      "FNDInventoryEntryUnit": "",
-      "FNDSurfaceArea": 0,
-      "FNDPurchaseEntryUnit": "",
-      "FNDSalesEntryUnit": "",
       "CTSItemPrimaryCustId": "",
-      "CTSCustGroup": "",
-      "QMSIsDispensingControlApplied": "No",
-      "QMSApprovedItemGroupId": "",
-      "QMSUnderDispensePercentage": 0,
-      "QMSAllowOnlyAuthorizedPersonnelForDispensing": "No",
-      "QMSOverDispensePercentage": 0,
-      "QMSApprovedCustomerListCheckMethod": "NoCheck"
+      "CTSCustGroup": ""
     },
     {
       "@odata.etag": "W/\"JzAsMCcn\"",
@@ -571,18 +562,8 @@ https://contoso.sandbox.operations.dynamics.com/data/ReleasedProductsV2?cross-co
       "RevRecRevenueRecognitionEnabled": "No",
       "RevRecRevenueType": "Essential",
       "BasePricePurchase": "No",
-      "FNDInventoryEntryUnit": "",
-      "FNDSurfaceArea": 0,
-      "FNDPurchaseEntryUnit": "",
-      "FNDSalesEntryUnit": "",
       "CTSItemPrimaryCustId": "",
-      "CTSCustGroup": "",
-      "QMSIsDispensingControlApplied": "No",
-      "QMSApprovedItemGroupId": "",
-      "QMSUnderDispensePercentage": 0,
-      "QMSAllowOnlyAuthorizedPersonnelForDispensing": "No",
-      "QMSOverDispensePercentage": 0,
-      "QMSApprovedCustomerListCheckMethod": "NoCheck"
+      "CTSCustGroup": ""
     },
     {
       "@odata.etag": "W/\"JzAsMCcn\"",
@@ -858,18 +839,8 @@ https://contoso.sandbox.operations.dynamics.com/data/ReleasedProductsV2?cross-co
       "RevRecRevenueRecognitionEnabled": "No",
       "RevRecRevenueType": "Essential",
       "BasePricePurchase": "No",
-      "FNDInventoryEntryUnit": "",
-      "FNDSurfaceArea": 0,
-      "FNDPurchaseEntryUnit": "",
-      "FNDSalesEntryUnit": "",
       "CTSItemPrimaryCustId": "CUST-001",
-      "CTSCustGroup": "",
-      "QMSIsDispensingControlApplied": "No",
-      "QMSApprovedItemGroupId": "",
-      "QMSUnderDispensePercentage": 0,
-      "QMSAllowOnlyAuthorizedPersonnelForDispensing": "No",
-      "QMSOverDispensePercentage": 0,
-      "QMSApprovedCustomerListCheckMethod": "NoCheck"
+      "CTSCustGroup": ""
     }
   ]
 }

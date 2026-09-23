@@ -113,8 +113,8 @@ function check(name, actual, expected) {
 
   console.log('\n=== catalog discovery (probe only, metadata 401) ===');
   const catalog = await run("refreshFieldCatalog('https://env.example.com')");
-  // 285 keys in the sample record, minus the @odata.etag annotation
-  check('field count matches sample minus annotations', catalog.fields.length, 284);
+  // 275 keys in the sample record, minus the @odata.etag annotation
+  check('field count matches sample minus annotations', catalog.fields.length, 274);
   check('source is probe', catalog.source, 'probe');
   check('no @odata annotations leaked', catalog.fields.filter(f => f.name.startsWith('@')).length, 0);
   const alt = catalog.fields.find(f => f.name === 'CTSCustGroup');
