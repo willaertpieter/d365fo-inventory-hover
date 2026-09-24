@@ -1,6 +1,6 @@
 // Drives content.js's real mouseenter / keydown handlers against a fake DOM to
-// prove that ALT over the tooltip no longer triggers a lookup, while ALT over a
-// genuine item number still does.
+// prove that ALT over the tooltip no longer triggers a lookup, that ALT over an
+// item number field does, and that no other field ever does.
 //
 // Run with:  node tests/hover-detection.test.js
 //
@@ -13,9 +13,9 @@ const vm = require('vm');
 const PROJECT = process.env.PROJECT_DIR || path.join(__dirname, '..');
 
 // --- minimal DOM with parentElement / closest / getAttribute -----------------
-function el(tag, { className = '', text = '', attrs = {}, children = [] } = {}) {
+function el(tag, { className = '', text = '', value, attrs = {}, children = [] } = {}) {
   const node = {
-    tagName: tag, className, _text: text, attrs, children: [], parentElement: null,
+    tagName: tag.toUpperCase(), className, _text: text, value, attrs, children: [], parentElement: null,
     get textContent() {
       return this.children.length ? this.children.map(c => c.textContent).join('') : this._text;
     },
@@ -32,6 +32,15 @@ function el(tag, { className = '', text = '', attrs = {}, children = [] } = {}) 
     appendChild(c) { c.parentElement = this; this.children.push(c); return c; },
     remove() {},
     querySelectorAll() { return []; },
+    // Only the 'input' selector content.js uses
+    querySelector(selector) {
+      for (const c of this.children) {
+        if (c.tagName === selector.toUpperCase()) return c;
+        const found = c.querySelector(selector);
+        if (found) return found;
+      }
+      return null;
+    },
     getBoundingClientRect() { return { width: 300, height: 200 }; },
     addEventListener() {}, removeEventListener() {},
     style: {}, dataset: {}
@@ -159,14 +168,73 @@ const settle = () => new Promise(r => setTimeout(r, 250));
   await settle();
   check('mouseenter on a grid item still queries', lookups, ['ES041WM0010']);
 
-  console.log('\n=== time-shaped strings rejected anywhere on the page ===');
-  const isItem = (str) => vm.runInContext(`isItemNumber(${JSON.stringify(str)})`, ctx);
-  check('09:41:22 rejected', isItem('09:41:22'), false);
-  check('9:41 rejected', isItem('9:41'), false);
-  check('ITEM/SKU:001 still accepted', isItem('ITEM/SKU:001'), true);
-  check('EQ050MX0010 still accepted', isItem('EQ050MX0010'), true);
-  check('FG0010421-01 still accepted', isItem('FG0010421-01'), true);
-  check('numeric item number still accepted', isItem('100234'), true);
+  // D365 renders a field as a control holding a caption and an input
+  const field = (controlName, value, caption = 'Caption') => {
+    const node = el('div', {
+      attrs: { 'data-dyn-controlname': controlName },
+      children: [
+        el('label', { text: caption }),
+        el('div', { children: [el('input', { value })] })
+      ]
+    });
+    body.appendChild(node);
+    return tagAsElement(node);
+  };
+  const input = (f) => f.children[1].children[0];
+  const label = (f) => f.children[0];
+
+  const hover = async (node) => {
+    lookups = [];
+    fire('mouseenter', { target: node, altKey: true, pageX: 100, pageY: 100 });
+    await settle();
+    return lookups;
+  };
+
+  console.log('\n=== item number fields trigger, whatever the value looks like ===');
+  const itemCases = [
+    ['ItemId', 'FG0010421-01'],
+    ['SalesLine_ItemId', 'PACK'],
+    ['InventTable_ItemId1', 'pallet 80'],
+    ['InventTable_ItemIdGrid', 'FG0020017'], // released products list
+    ['ProductNumber', 'RM0020011'],
+    ['EcoResProduct_ProductNumber', 'EQ050MX0010'],
+    ['InventTable_Product_DisplayProductNumber', 'RM0030044'] // released product details
+  ];
+  for (const [name, value] of itemCases) {
+    check(`${name} = ${value} queries`, await hover(input(field(name, value))), [value]);
+  }
+  check('a variant display product number queries its product master',
+    await hover(input(field('InventTable_Product_DisplayProductNumber', 'FG001 : : Red : L : '))), ['FG001']);
+  check('released product variants grid queries the product master',
+    await hover(input(field('EcoResDistinctProductVariant_DisplayProductNumberMainGrid', 'KIT-0001 : CFG-01 : : : :'))), ['KIT-0001']);
+
+  const labelled = field('SalesLine_ItemId', 'FG0010421-01', 'Item number');
+  check('hovering the caption queries the field value, not "Item number"', await hover(label(labelled)), ['FG0010421-01']);
+  check('hovering the control itself queries the field value', await hover(labelled), ['FG0010421-01']);
+  check('an empty item field triggers nothing', await hover(input(field('SalesLine_ItemId', ''))), []);
+  check('a value over 50 characters triggers nothing', await hover(input(field('ItemId', 'X'.repeat(51)))), []);
+
+  console.log('\n=== every other field is skipped, even with an item-like value ===');
+  const otherCases = [
+    ['InventDim_inventBatchId', '25S1-07458'],
+    ['SalesLine_SalesId', 'SO-000123'],
+    ['InventDim_InventLocationId', 'WH-01'],
+    ['ItemGroupId', 'FG01'],
+    ['InventTable_ItemName', 'Pallet 80'],
+    ['ItemBuyerGroupId', 'BUY01'],
+    ['SalesLine_ExternalItemId', 'CUST-4711'],
+    ['ItemGroupIdGrid', 'FG01'],
+    ['DistinctProductVariant_SearchNameMainGrid', 'PALLET80'],
+    ['ItemIdGroup', 'G01']
+  ];
+  for (const [name, value] of otherCases) {
+    check(`${name} = ${value} triggers nothing`, await hover(input(field(name, value))), []);
+  }
+
+  const bare = el('span', { text: 'FG0010421-01' });
+  body.appendChild(bare);
+  tagAsElement(bare);
+  check('text outside any D365 control triggers nothing', await hover(bare), []);
 
   console.log(`\n${failures === 0 ? 'ALL CHECKS PASSED' : failures + ' CHECK(S) FAILED'}`);
   process.exit(failures === 0 ? 0 : 1);

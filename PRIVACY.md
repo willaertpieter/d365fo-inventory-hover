@@ -1,6 +1,6 @@
 # Privacy policy: D365FO Inventory Hover
 
-**Effective:** 23 September 2026 · **Applies to:** version 1.1.1 and later
+**Effective:** 24 September 2026 · **Applies to:** version 1.2.0 and later
 
 ## In short
 
@@ -17,10 +17,10 @@ D365FO Inventory Hover is a personal project by Pieter Willaert, built in free t
 
 It runs only on D365 F&O pages: the Microsoft-hosted address patterns listed in the manifest, plus any site you enable yourself with **Enable on this site** in the popup.
 
-On those pages it does nothing until you **hold Alt while hovering** something that looks like an item number. It then reads:
+On those pages it does nothing until you **hold Alt while hovering** a field. It then reads:
 
-- the text of the element under your cursor, and
-- the element's D365 control name, to tell item fields from other fields.
+- the D365 control name of the field under your cursor, to tell item number fields from all other fields, and
+- only if it is an item number field, the value of that field: the item number.
 
 It does not read, scrape or record any other page content.
 
@@ -53,7 +53,7 @@ Two things are worth knowing:
 
 Uninstalling the extension deletes everything it stored.
 
-For troubleshooting, the extension also writes short messages to the browser's developer console of the D365 tab. They are visible only to you, in that tab, and are not stored.
+For troubleshooting, the extension also writes short messages to the browser's developer console of the D365 tab, such as the item number being looked up or the control name of a field that was skipped. They are visible only to you, in that tab, and are not stored.
 
 ## What it does not do
 

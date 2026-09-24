@@ -1,27 +1,34 @@
-// Pattern for D365 item numbers: flexible to match various formats
-// Matches: FG0000012-01, RM0020011, PACK-PALLET80_DEP, FG0010421, ITEM/SKU:001, etc.
-// Requires at least one digit - filters out pure-letter false positives like
-// currency/UOM/status codes (USD, PCS, OPEN), which are otherwise indistinguishable
-// in shape from a real item number.
-const ITEM_PATTERN = /^(?=[A-Z0-9\-_\/:.]*\d)[A-Z0-9][A-Z0-9\-_\/:\.]{2,}$/;
+// D365 F&O renders form controls with a data-dyn-controlname attribute naming the
+// control - the same hook Microsoft's own UI test automation relies on. A lookup
+// only ever runs on a control whose name identifies it as the item number field.
+//
+// The value alone can't decide it: an order number, batch number or warehouse code
+// looks exactly like an item number, and an item number like "PACK" looks like a
+// unit or status code. So the field decides, and the value is taken as-is.
+//
+// Control names follow <DataSource>_<Field>, with a digit appended when a form has
+// the same field twice, and "Grid" or "MainGrid" on some grid columns: "ItemId",
+// "SalesLine_ItemId", "InventTable_ItemId1", "InventTable_ItemIdGrid" (released
+// products list), "EcoResDistinctProductVariant_DisplayProductNumberMainGrid"
+// (released product variants). The part after the last '_', without a trailing
+// number, "Grid" or "MainGrid", must equal one of these names exactly
+// (case-insensitive). A substring match would
+// also accept ItemGroupId, ItemName, ItemBuyerGroupId or ExternalItemId (the
+// customer's own item number). Add a name here if a form in your environment uses
+// another one: right-click the field > Form information shows its control name.
+//
+// DisplayProductNumber is the "Product number" on released product details
+// (InventTable_Product_DisplayProductNumber). See DISPLAY_PRODUCT_NUMBER_FIELD.
+const ITEM_FIELD_NAMES = ['itemid', 'productnumber', 'displayproductnumber'];
 
-// Shapes that satisfy ITEM_PATTERN but are never an item number, rejected after it
-// matches. ITEM_PATTERN has to permit ':' and '.' (item numbers like ITEM/SKU:001
-// are real), which also lets clock times through - and a time is indistinguishable
-// from an item number by shape alone on any surface that carries no
-// data-dyn-controlname to veto it. Matches 9:41, 09:41 and 09:41:22; a locale that
-// renders "9:41:22 AM" is already excluded by ITEM_PATTERN (space, letters).
-const NON_ITEM_PATTERNS = [
-  /^\d{1,2}:\d{2}(:\d{2})?$/
-];
+// A product variant's display product number appends its dimensions to the product
+// number: "P0001 : : Red : L : ". Only the part before the first " : " is an item
+// number, so a variant shows the stock of its product master, one row per variant.
+const DISPLAY_PRODUCT_NUMBER_FIELD = 'displayproductnumber';
 
-// D365 F&O renders form controls with a data-dyn-controlname attribute identifying
-// the underlying field (e.g. "ItemId", "ProductNumber") - the same hook Microsoft's
-// own UI test automation relies on. Since an order number, warehouse code, batch
-// number etc. can look identical to an item number in plain text, this is used to
-// veto matches on fields we can positively identify as NOT item/product related.
-// Extend this if your environment uses different control names (check via DevTools).
-const ITEM_FIELD_NAME_PATTERN = /item|productnumber/i;
+// D365's ItemId is 20 characters by default and can be extended. Anything much
+// longer is a whole block of text rather than a field value.
+const ITEM_NUMBER_MAX_LENGTH = 50;
 
 // The tooltip is appended to document.body, so it lives in the same document the
 // hover and keydown listeners watch. Without this guard the tooltip feeds its own
@@ -29,32 +36,35 @@ const ITEM_FIELD_NAME_PATTERN = /item|productnumber/i;
 // cursor rests on it) treats whatever is under the cursor as an item number and
 // fires a bogus OData lookup that replaces the tooltip being read.
 //
-// Plenty of what the tooltip displays satisfies ITEM_PATTERN, which has to allow
-// digits, '-', '_', '/', ':' and '.': a "09:41:22" timestamp, a "1/10/2024" product
-// date, a "20.8" quantity, warehouse codes like "WH-01", config codes, customer
-// IDs like "C010042".
-//
-// findControlName() can't prevent this - walking up from a tooltip node reaches
-// document.body without ever finding a data-dyn-controlname, so it returns null and
-// the veto below is skipped. That veto only rejects fields it can POSITIVELY
-// identify as non-item, so "no control name at all" is treated as "might be an item".
+// The tooltip carries no data-dyn-controlname, so extractItemNumber() already
+// rejects it; this check says so explicitly and doesn't depend on that staying true.
 function isInsideTooltip(element) {
   return !!(element && element.closest && element.closest('.d365-inventory-tooltip'));
 }
 
-// Walk up from `element` looking for the nearest data-dyn-controlname attribute.
-function findControlName(element) {
+// Walk up from `element` to the nearest element with a data-dyn-controlname.
+function findControl(element) {
   let node = element;
   for (let i = 0; i < 10 && node; i++) {
     if (node.getAttribute) {
       const name = node.getAttribute('data-dyn-controlname');
       if (name) {
-        return name;
+        return { element: node, name };
       }
     }
     node = node.parentElement;
   }
   return null;
+}
+
+// The item field a control name identifies ("itemid", ...), or null when it isn't
+// one. See ITEM_FIELD_NAMES.
+function itemFieldOf(controlName) {
+  const field = controlName.split('_').pop()
+    .replace(/\d+$/, '')
+    .replace(/(main)?grid$/i, '')
+    .toLowerCase();
+  return ITEM_FIELD_NAMES.includes(field) ? field : null;
 }
 
 // Whether to show cross-company inventory (all legal entities at once) instead of
@@ -521,91 +531,73 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-// Extract item number from element - search multiple locations
+// The item number under the cursor, or null unless the cursor is on an item number
+// field (see ITEM_FIELD_NAMES). Anything outside a D365 control - form captions,
+// messages, the tooltip - is never looked up.
 function extractItemNumber(element) {
   if (!element || !(element instanceof Element)) return null;
 
-  // If we can positively identify the underlying D365 field and it's clearly not
-  // an item/product field (e.g. a warehouse, order, or batch number control),
-  // veto the match even though the text itself might look like an item number.
-  const controlName = findControlName(element);
-  if (controlName && !ITEM_FIELD_NAME_PATTERN.test(controlName)) {
+  const control = findControl(element);
+  if (!control) {
+    return null;
+  }
+  const field = itemFieldOf(control.name);
+  if (!field) {
+    logSkippedField(control.name);
     return null;
   }
 
-  // 1. Try direct textContent
-  let text = element.textContent?.trim();
-  if (isItemNumber(text)) {
-    return text;
+  // A D365 field control holds its value in an <input>, next to a <label> with the
+  // caption ("Item number"). Reading the input means the caption is never taken for
+  // an item number, and hovering the caption shows the field's item.
+  let value;
+  const input = element.tagName === 'INPUT'
+    ? element
+    : (control.element.querySelector && control.element.querySelector('input'));
+  if (input) {
+    value = input.value;
+  } else if (!isInsideLabel(element, control.element) && !(element.children && element.children.length > 0)) {
+    // A control rendered as plain text: use the hovered text itself, unless it's a
+    // caption, or a container whose text would run several values together.
+    value = element.textContent;
+  } else {
+    return null;
   }
 
-  // 2. Try element's value attribute (for inputs)
-  if (element.value !== undefined) {
-    text = element.value.trim();
-    if (isItemNumber(text)) {
-      return text;
-    }
+  if (field === DISPLAY_PRODUCT_NUMBER_FIELD && typeof value === 'string') {
+    value = value.split(' : ')[0];
   }
-
-  // 3. Try data attributes
-  if (element.dataset) {
-    const dataAttrs = Object.keys(element.dataset || {});
-    for (const attr of dataAttrs) {
-      const value = element.dataset[attr]?.trim();
-      if (isItemNumber(value)) {
-        return value;
-      }
-    }
-  }
-
-  // 4. Search immediate child elements for item number
-  if (element.children && element.children.length > 0) {
-    for (const child of element.children) {
-      text = child.textContent?.trim();
-      if (isItemNumber(text)) {
-        return text;
-      }
-      if (child.value !== undefined && typeof child.value === 'string') {
-        text = child.value.trim();
-        if (isItemNumber(text)) {
-          return text;
-        }
-      }
-    }
-  }
-
-  // 5. Search parent element (up to 3 levels)
-  let parent = element.parentElement;
-  for (let i = 0; i < 3 && parent; i++) {
-    if (parent.textContent) {
-      // Get first item number found in parent (avoid getting whole cell content).
-      // Routed through isItemNumber() rather than testing ITEM_PATTERN directly so
-      // this path applies NON_ITEM_PATTERNS too - it used to be the one way a
-      // rejected shape could still come back as an item number.
-      const matches = parent.textContent.match(ITEM_PATTERN);
-      if (matches && isItemNumber(matches[0])) {
-        return matches[0];
-      }
-    }
-    parent = parent.parentElement;
-  }
-
-  // 6. Try aria-label (only if element has getAttribute method)
-  if (element.getAttribute) {
-    const ariaLabel = element.getAttribute('aria-label')?.trim();
-    if (isItemNumber(ariaLabel)) {
-      return ariaLabel;
-    }
-  }
-
-  return null;
+  return cleanItemNumber(value);
 }
 
-// Check if text is an item number
-function isItemNumber(text) {
-  if (!text) return false;
-  const trimmed = text.trim();
-  return ITEM_PATTERN.test(trimmed) && !NON_ITEM_PATTERNS.some(p => p.test(trimmed));
+function isInsideLabel(element, stopAt) {
+  for (let node = element; node && node !== stopAt; node = node.parentElement) {
+    if (node.tagName === 'LABEL') {
+      return true;
+    }
+  }
+  return false;
+}
+
+// The field decides whether this is an item number, so any single-line value of a
+// plausible length is accepted: "PACK", "pallet 80", "09:41" if that's the item.
+function cleanItemNumber(value) {
+  const text = typeof value === 'string' ? value.trim() : '';
+  if (!text || text.length > ITEM_NUMBER_MAX_LENGTH || /[\r\n\t]/.test(text)) {
+    return null;
+  }
+  return text;
+}
+
+// Alt+hover over a field that isn't an item number logs the field's control name
+// once, so a form that names its item field differently can be spotted in the
+// console without inspecting the page's elements.
+let lastSkippedControlName = null;
+function logSkippedField(controlName) {
+  if (controlName !== lastSkippedControlName) {
+    lastSkippedControlName = controlName;
+    console.log(`[D365 Inventory] Not an item number field, skipped: ${controlName}`);
+  }
 }
 
 // Small spinner tooltip shown while the OData call is in flight, so a slow

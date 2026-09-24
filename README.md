@@ -1,6 +1,6 @@
 # D365FO Inventory Hover
 
-Hold Alt and hover over an item number anywhere in Dynamics 365 Finance & Operations. A tooltip shows the stock per warehouse and the product details you care about, without leaving the page you're working on.
+Hold Alt and hover over an item number field anywhere in Dynamics 365 Finance & Operations. A tooltip shows the stock per warehouse and the product details you care about, without leaving the page you're working on.
 
 **[Get it free on Microsoft Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/d365fo-inventory-hover/kifigmgmdbkjkgogicoglafmceofdahe)** · [Watch the video tour](https://www.youtube.com/watch?v=SyV7vMDebmg) · [Privacy](PRIVACY.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md)
 
@@ -8,7 +8,7 @@ Hold Alt and hover over an item number anywhere in Dynamics 365 Finance & Operat
 
 ## What you get
 
-The tooltip works on sales order lines, formula and BOM lines, loads, and any other page that shows item numbers. It contains:
+The tooltip works on sales order lines, formula and BOM lines, loads, and any other page with an item number field. It contains:
 
 | Part | Content |
 |---|---|
@@ -30,11 +30,11 @@ To run it from source in Edge or Chrome, clone this repository, open `edge://ext
 
 ## Using it
 
-Hold **Alt** and hover over an item number. You can also hover first and press Alt afterwards. A "Retrieving inventory..." tooltip appears straight away and is replaced by the result a moment later.
+Hold **Alt** and hover over an item number, or over the caption of an item number field. You can also hover first and press Alt afterwards. A "Retrieving inventory..." tooltip appears straight away and is replaced by the result a moment later.
 
 The tooltip stays for a second after you move away, so you can move onto it. It stays open while the cursor is on it, and closes when you leave both the item and the tooltip, click elsewhere or switch windows.
 
-Use the complete item number, including any suffix: `FG0010421-01` works, `FG0010421` alone doesn't, because the lookup is an exact match.
+Only item number fields trigger a lookup. An order number, batch number or item group never does, even when its value looks like an item number. See [Recognising item numbers](#recognising-item-numbers).
 
 **The toolbar popup** holds the day-to-day controls:
 
@@ -106,7 +106,7 @@ With **Cross-company inventory** switched on, the filter is dropped and the tool
 
 ### What a lookup does
 
-1. The part of the extension running in the D365 page sees Alt held over a possible item number and checks that the field isn't known to hold something else.
+1. The part of the extension running in the D365 page sees Alt held over an item number field and reads its value.
 2. It waits 150 ms for the cursor to settle, then checks the five-minute cache.
 3. It checks the rate limit: at most 30 lookups per minute. A hover counts once even when it makes two requests, and cache hits don't count. If D365 answers HTTP 429, the extension pauses for as long as `Retry-After` asks, or 30 seconds.
 4. It sends two requests at the same time to the page's own address: stock from `WarehousesOnHandV2`, and your chosen fields from `ReleasedProductsV2` (only when fields are selected).
@@ -161,15 +161,21 @@ Values are shown as follows. Empty strings and D365's "no date" (`1900-01-01`) a
 
 ### Recognising item numbers
 
-A text counts as a possible item number when it matches `/^(?=[A-Z0-9\-_\/:.]*\d)[A-Z0-9][A-Z0-9\-_\/:\.]{2,}$/`: at least three characters, at least one digit, and letters, digits, `-`, `_`, `/`, `:` or `.`. That covers `FG0010421-01`, `RM0020011`, `PACK-PALLET80_DEP` and `SKU/001:A.B`, while codes without digits such as USD, PCS or OPEN are ignored.
+The field decides, not the value. A batch number like `25S1-07458` looks exactly like an item number, and an item number like `PACK` looks like a unit or status code, so no pattern on the value can tell them apart.
 
-Order numbers and warehouse codes can look just like item numbers, so three checks keep lookups on the right fields:
+D365 names every field control with a `data-dyn-controlname` attribute; right-click a field and choose **Form information** to see it. The name usually has the form `<DataSource>_<Field>`, sometimes with a digit, `Grid` or `MainGrid` at the end. The extension takes the part after the last `_`, drops a trailing number, `Grid` or `MainGrid` and compares the rest, ignoring case, with `ITEM_FIELD_NAMES` in `content.js`: `ItemId`, `ProductNumber` and `DisplayProductNumber`.
 
-| Check | How |
+| Control name | Lookup |
 |---|---|
-| Field names | D365 marks form controls with `data-dyn-controlname`. Fields positively identified as something other than an item, such as order numbers, warehouses, batches or statuses, are skipped. Item fields are recognised by `ITEM_FIELD_NAME_PATTERN` in `content.js`. Fields without a control name are treated as possible items |
-| The tooltip itself | Values in the tooltip, such as a timestamp, a quantity or a customer ID, can match the pattern too. Hovering the tooltip never triggers a lookup |
-| Known shapes | `NON_ITEM_PATTERNS` in `content.js` rejects clock times like `09:41:22`. Add new exceptions there rather than tightening the main pattern, which could reject real item numbers |
+| `ItemId`, `SalesLine_ItemId`, `InventTable_ItemId1`, `InventTable_ItemIdGrid` (released products list) | Yes |
+| `ProductNumber`, `InventTable_Product_DisplayProductNumber` (released product details), `EcoResDistinctProductVariant_DisplayProductNumberMainGrid` (released product variants) | Yes |
+| `ItemGroupId`, `ItemName`, `ItemBuyerGroupId`, `SalesLine_ExternalItemId` | No: only contains "item" |
+| `InventDim_inventBatchId`, `SalesLine_SalesId`, `InventDim_InventLocationId` | No |
+| No control name: form captions, messages, the tooltip itself | No |
+
+A product variant's display product number includes its dimensions, such as `FG001 : : Red : L`. Only the part before the first ` : ` is looked up, so the tooltip shows the product master's stock, one row per variant.
+
+The value is read from the field's input box, so hovering the caption "Item number" looks up the item in that field. Any value on a single line of up to 50 characters is accepted, including `PACK` or lowercase item numbers. Use the complete item number, including any suffix: the lookup is an exact match.
 
 ## Supported environments
 
@@ -194,8 +200,7 @@ To add an address permanently, add its pattern to `host_permissions` and `conten
 
 | Problem | What to check |
 |---|---|
-| No tooltip | Hold Alt while hovering, and use the full item number. The popup's Recent queries shows whether a lookup ran |
-| Tooltip on a field that isn't an item | Look up the field's `data-dyn-controlname` in DevTools and adjust `ITEM_FIELD_NAME_PATTERN` in `content.js` |
+| No tooltip | Hold Alt while hovering. The popup's Recent queries shows whether a lookup ran. If not, right-click the field and choose **Form information** to see its control name, or open the browser console (F12), where Alt+hover over a field that isn't recognised logs `Not an item number field, skipped:` with its control name. If that is an item field, add its name to `ITEM_FIELD_NAMES` in `content.js` |
 | "No inventory records found" although there is stock | Open the lookup in Recent queries to see the exact item number and company that were queried. The stock may be in another legal entity: try cross-company mode |
 | Stock from the wrong legal entity | Check in Recent queries that the page address contains `?cmp=` |
 | OData error 401 | Your D365 session has probably expired. Reload the D365 tab and sign in again |
@@ -225,7 +230,7 @@ They cover field discovery, value formatting and the product panel; item detecti
 | Setting | Where |
 |---|---|
 | Cache lifetime (5 minutes), rate limit (30 per minute) | `content.js` |
-| Item number pattern, item field names, rejected shapes | `ITEM_PATTERN`, `ITEM_FIELD_NAME_PATTERN`, `NON_ITEM_PATTERNS` in `content.js` |
+| Item number field names, maximum item number length (50) | `ITEM_FIELD_NAMES`, `ITEM_NUMBER_MAX_LENGTH` in `content.js` |
 | Quantity and dimension columns and their order | `QUANTITY_FIELD_DEFS` (mirrored in `options.js`) and `DIMENSION_FIELD_DEFS` in `content.js` |
 | Default fields, field list lifetime (7 days), maximum fields (40) | `DEFAULT_PRODUCT_FIELDS` (mirrored in `options.js` and counted in `popup.js`), `FIELD_CATALOG_TTL`, `MAX_PRODUCT_FIELDS` in `content-product-fields.js` |
 
@@ -236,8 +241,8 @@ Field lists are stored in `chrome.storage.local`, because a 285-field list excee
 Commit and tag the version, then build the store package from the tag:
 
 ```
-git tag v1.1.2
-node scripts/package.js v1.1.2
+git tag v1.2.0
+node scripts/package.js v1.2.0
 ```
 
 This writes `dist/d365fo-inventory-hover-<version>.zip` and `dist/SHA256SUMS.txt`, built from git rather than the working folder, so the same tag gives the same bytes on any machine. Upload the zip in [Microsoft Partner Center](https://partner.microsoft.com/dashboard/microsoftedge/overview) and attach both files to the GitHub release. Record the changes in [CHANGELOG.md](CHANGELOG.md).

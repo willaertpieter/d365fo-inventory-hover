@@ -38,7 +38,7 @@ To check that the extension installed in your browser is exactly that source:
 ```
 git clone https://github.com/willaertpieter/d365fo-inventory-hover
 cd d365fo-inventory-hover
-node scripts/verify.js "%LOCALAPPDATA%\Microsoft\Edge\User Data\Default\Extensions\kifigmgmdbkjkgogicoglafmceofdahe\1.1.1_0" v1.1.1
+node scripts/verify.js "%LOCALAPPDATA%\Microsoft\Edge\User Data\Default\Extensions\kifigmgmdbkjkgogicoglafmceofdahe\1.2.0_0" v1.2.0
 ```
 
 Every file must match byte-for-byte. The one exception is `manifest.json`, where the store adds its own fields (such as `update_url`); those are listed and allowed, and everything else must be identical. `kifigmgmdbkjkgogicoglafmceofdahe` is the id of the [Microsoft Edge Add-ons listing](https://microsoftedge.microsoft.com/addons/detail/d365fo-inventory-hover/kifigmgmdbkjkgogicoglafmceofdahe). If you use a browser profile other than the default, replace `Default` with its folder name; `edge://version` shows your profile path.
