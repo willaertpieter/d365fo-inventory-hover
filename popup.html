@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D365FO Inventory Hover</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      width: 400px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #fff;
+      color: #333;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 16px;
+      color: #0078d4;
+      margin-bottom: 16px;
+      border-bottom: 2px solid #0078d4;
+      padding-bottom: 10px;
+    }
+
+    .setting {
+      margin-bottom: 16px;
+    }
+
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 6px;
+      font-size: 13px;
+      color: #333;
+    }
+
+    button {
+      background: #0078d4;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button:hover {
+      background: #106ebe;
+    }
+
+    button:active {
+      background: #005a9e;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    button.primary {
+      flex: 1;
+    }
+
+    .stats-display {
+      display: flex;
+      gap: 16px;
+      margin-top: 8px;
+      padding: 8px;
+      background: #f3f2f1;
+      border-radius: 4px;
+    }
+
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .stat-value {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0078d4;
+    }
+
+    .audit-logs {
+      max-height: 200px;
+      overflow-y: auto;
+      border: 1px solid #d1d1d1;
+      border-radius: 4px;
+      padding: 8px;
+      font-size: 11px;
+      font-family: monospace;
+      background: #fafafa;
+    }
+
+    .audit-log-entry {
+      padding: 4px 0;
+      border-bottom: 1px solid #e1e1e1;
+      color: #333;
+    }
+
+    .audit-log-entry:last-child {
+      border-bottom: none;
+    }
+
+    .log-item-text {
+      display: flex;
+      align-items: center;
+    }
+
+    .log-caret {
+      display: inline-block;
+      width: 12px;
+      color: #999;
+      flex-shrink: 0;
+    }
+
+    .log-success {
+      color: #107c10;
+    }
+
+    .log-error {
+      color: #d13438;
+    }
+
+    .log-detail {
+      margin: 6px 0 8px 16px;
+      padding: 8px;
+      background: #fff;
+      border: 1px solid #e1e1e1;
+      border-radius: 4px;
+    }
+
+    .log-detail-label {
+      font-size: 9px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #999;
+      margin-top: 6px;
+    }
+
+    .log-detail-label:first-child {
+      margin-top: 0;
+    }
+
+    .log-detail-url {
+      word-break: break-all;
+      color: #0078d4;
+      margin-top: 2px;
+    }
+
+    .log-detail-raw {
+      max-height: 140px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      background: #fafafa;
+      border: 1px solid #f0f0f0;
+      border-radius: 3px;
+      padding: 6px;
+      margin-top: 2px;
+      color: #333;
+    }
+
+    .log-copy-btn {
+      margin-top: 8px;
+      padding: 4px 8px;
+      font-size: 10px;
+      font-weight: 500;
+      background: #f3f2f1;
+      color: #333;
+    }
+
+    .log-copy-btn:hover {
+      background: #edebe9;
+    }
+
+    .help-text {
+      font-size: 11px;
+      color: #666;
+      margin-top: 4px;
+      line-height: 1.4;
+    }
+
+    .toggle-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+    }
+
+    .toggle-row input[type="checkbox"] {
+      margin-top: 2px;
+      flex-shrink: 0;
+      width: 16px;
+      height: 16px;
+      accent-color: #0078d4;
+    }
+
+    .status.success {
+      background: #dffcf0;
+      color: #107c10;
+      border-left: 3px solid #107c10;
+      display: block;
+    }
+
+    .status.error {
+      background: #fed9cc;
+      color: #d13438;
+      border-left: 3px solid #d13438;
+      display: block;
+    }
+
+    .manual-site-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 6px 8px;
+      background: #f3f2f1;
+      border-radius: 4px;
+      font-size: 12px;
+      margin-top: 6px;
+      word-break: break-all;
+    }
+
+    .manual-site-remove {
+      background: none;
+      color: #d13438;
+      padding: 2px 8px;
+      font-size: 11px;
+      font-weight: 500;
+      flex-shrink: 0;
+    }
+
+    .manual-site-remove:hover {
+      background: #fed9cc;
+    }
+
+    #btn-add-site {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .secondary-wide {
+      width: 100%;
+      margin-top: 8px;
+      background: #fff;
+      color: #333;
+      border: 1px solid #d1d1d1;
+    }
+
+    .secondary-wide:hover {
+      background: #f3f2f1;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>D365FO Inventory Hover</h1>
+
+    <div class="button-group">
+      <button class="primary" id="btn-clear-cache">Refresh inventory data</button>
+    </div>
+    <div class="help-text" style="margin-bottom: 16px;">
+      Discards cached lookups so the next hover re-queries D365. Use it after changing
+      data in D365. Field lists and query logs are left alone &mdash; to re-read an
+      environment's field list use <strong>Refresh fields</strong> in the tooltip settings.
+    </div>
+
+    <div class="status" id="status"></div>
+
+    <!-- Manual site activation (for environments not matching the built-in list) -->
+    <div class="setting" id="manual-site-section" style="display: none; margin-top: 20px;">
+      <label>Site Access</label>
+      <div class="help-text" id="manual-site-status"></div>
+      <button id="btn-add-site" style="display: none;">Enable on this site</button>
+      <div id="manual-site-list"></div>
+    </div>
+
+    <!-- Settings -->
+    <div class="setting">
+      <label class="toggle-row" for="chk-cross-company">
+        <span>
+          Cross-company inventory
+          <div class="help-text">
+            Off: shows inventory for the legal entity you're currently viewing (read from the page URL).
+            On: shows inventory across every legal entity in the environment at once.
+          </div>
+        </span>
+        <input type="checkbox" id="chk-cross-company">
+      </label>
+    </div>
+
+    <!-- Tooltip configuration lives on the options page - a 285-field picker
+         doesn't fit in a 400px popup. -->
+    <div class="setting">
+      <label>Tooltip Contents</label>
+      <div class="help-text" id="tooltip-summary"></div>
+      <button id="btn-open-settings" class="secondary-wide">Configure tooltip&hellip;</button>
+    </div>
+
+    <!-- Query Counter -->
+    <div class="setting" id="query-stats">
+      <label>Query Statistics</label>
+      <div class="stats-display">
+        <div class="stat-item">
+          <span class="stat-label">Today:</span>
+          <span class="stat-value" id="query-today">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Total:</span>
+          <span class="stat-value" id="query-total">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Audit Logs -->
+    <div class="setting">
+      <label>Recent Queries <button id="btn-clear-logs" style="float: right; padding: 4px 8px; font-size: 11px;">Clear Logs</button></label>
+      <div class="help-text" style="margin-bottom: 6px;">
+        Local audit trail &mdash; click an entry for the exact OData request and response.
+        Clearing it empties this list and resets the counters above; cached lookups are
+        left alone, so nothing is re-queried.
+      </div>
+      <div id="audit-logs" class="audit-logs"></div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
