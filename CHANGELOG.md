@@ -4,6 +4,11 @@ Every release, what changed and whether permissions changed. Releases are tagged
 in git; each store package is built from its tag with `scripts/package.js` (see
 [SECURITY.md](SECURITY.md#checking-a-release)).
 
+## Unreleased
+
+- New license. The extension stays free to use, including at work, and the source stays public, but it may no longer be redistributed, published in modified form or rebranded. See [LICENSE](LICENSE). Versions 1.2.0 and earlier remain under the MIT License.
+- The store package now includes the `LICENSE` file, so the terms travel with every installed copy.
+
 ## 1.2.0 (2026-09-24)
 
 Item number detection now goes by the field, not by what the value looks like. **No new permissions**.

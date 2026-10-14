@@ -39,7 +39,22 @@ function releaseFiles(ref) {
       if (!/^[a-z]+:/i.test(ref2)) add(path.posix.join(path.posix.dirname(page), ref2));
     }
   }
+  // The license ships in the package from the first version after 1.2.0, when
+  // it stopped being MIT. Releases up to 1.2.0 shipped without it, so their
+  // installed copies must still verify against their tags.
+  if (compareVersions(manifest.version, '1.2.0') > 0) files.add('LICENSE');
+
   return { manifest, files: [...files].sort() };
+}
+
+// Compares dotted manifest versions ("1.10.0" > "1.9.2").
+function compareVersions(a, b) {
+  const pa = a.split('.').map(Number), pb = b.split('.').map(Number);
+  for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+    const d = (pa[i] || 0) - (pb[i] || 0);
+    if (d) return d;
+  }
+  return 0;
 }
 
 const sha256 = buf => crypto.createHash('sha256').update(buf).digest('hex');
