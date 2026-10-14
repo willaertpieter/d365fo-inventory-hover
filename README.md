@@ -253,6 +253,4 @@ Free to use, including at work. You may read the source, deploy the extension wi
 
 The name "D365FO Inventory Hover" and its icon identify the official extension and are not licensed for use by forks or copies.
 
-Versions 1.2.0 and earlier were released under the MIT License.
-
 © 2026 Pieter Willaert
