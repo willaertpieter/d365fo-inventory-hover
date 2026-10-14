@@ -7,6 +7,7 @@ in git; each store package is built from its tag with `scripts/package.js` (see
 ## Unreleased
 
 - New license. The extension stays free to use, including at work, and the source stays public, but it may no longer be redistributed, published in modified form or rebranded. See [LICENSE](LICENSE). Versions 1.2.0 and earlier remain under the MIT License.
+- The store package now includes the `LICENSE` file, so the terms travel with every installed copy.
 
 ## 1.2.0 (2026-09-24)
 
