@@ -745,7 +745,13 @@ async function createTooltip(inventory, productResult) {
     table.appendChild(tr);
   });
 
-  tooltip.appendChild(table);
+  // The table scrolls inside its own box, so a long warehouse list can be
+  // shortened to fit the window (see positionTooltip) without the header and
+  // timestamp scrolling away with it.
+  const tableWrap = document.createElement('div');
+  tableWrap.className = 'tooltip-table-wrap';
+  tableWrap.appendChild(table);
+  tooltip.appendChild(tableWrap);
 
   const timestamp = document.createElement('div');
   timestamp.className = 'tooltip-timestamp';
@@ -755,10 +761,15 @@ async function createTooltip(inventory, productResult) {
   return tooltip;
 }
 
+// Smallest height the warehouse table is shortened to, so a few rows always
+// show; anything still too tall then scrolls as a whole (max-height in CSS).
+const MIN_TABLE_HEIGHT = 120;
+const TOOLTIP_MARGIN = 10;
+
 // Position tooltip near cursor
 function positionTooltip(tooltip, pageX, pageY) {
-  let left = pageX + 10;
-  let top = pageY + 10;
+  let left = pageX + TOOLTIP_MARGIN;
+  let top = pageY + TOOLTIP_MARGIN;
 
   // Remove if already in DOM
   if (tooltip.parentNode) {
@@ -767,13 +778,28 @@ function positionTooltip(tooltip, pageX, pageY) {
   
   document.body.appendChild(tooltip);
   
+  // A tooltip taller than the window would be pushed off the top. Shorten the
+  // warehouse table by the overflow instead; it scrolls, with its header row
+  // fixed, while the item header and timestamp stay in view.
+  // The CSS max-height already clips the tooltip, so measure the full content
+  // height (scrollHeight, plus the border) to find the real overflow.
+  const maxHeight = window.innerHeight - 2 * TOOLTIP_MARGIN;
+  const fullHeight = tooltip.scrollHeight + (tooltip.offsetHeight - tooltip.clientHeight);
+  const tableWrap = tooltip.querySelector('.tooltip-table-wrap');
+  if (tableWrap && fullHeight > maxHeight) {
+    const excess = fullHeight - maxHeight;
+    tableWrap.style.maxHeight = `${Math.max(MIN_TABLE_HEIGHT, tableWrap.offsetHeight - excess)}px`;
+  }
   const tooltipRect = tooltip.getBoundingClientRect();
+
   if (left + tooltipRect.width > window.innerWidth) {
-    left = window.innerWidth - tooltipRect.width - 10;
+    left = window.innerWidth - tooltipRect.width - TOOLTIP_MARGIN;
   }
   if (top + tooltipRect.height > window.innerHeight) {
-    top = window.innerHeight - tooltipRect.height - 10;
+    top = window.innerHeight - tooltipRect.height - TOOLTIP_MARGIN;
   }
+  left = Math.max(TOOLTIP_MARGIN, left);
+  top = Math.max(TOOLTIP_MARGIN, top);
 
   tooltip.style.left = `${left}px`;
   tooltip.style.top = `${top}px`;

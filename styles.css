@@ -18,8 +18,16 @@
   z-index: 10000;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 12px;
-  min-width: 450px;
-  max-width: 650px;
+  /* border-box so max-height below includes padding and border; the widths
+     are the former 450/650px content widths plus 2 x (12px padding + 2px border). */
+  box-sizing: border-box;
+  min-width: 478px;
+  max-width: 678px;
+  /* Last resort when even a shortened warehouse table doesn't fit the window
+     (positionTooltip shortens that first): the whole tooltip scrolls. */
+  max-height: calc(100vh - 20px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }
 
 .tooltip-header {
@@ -88,18 +96,33 @@
   margin-top: 4px;
 }
 
+/* Scroll box for the warehouse table. positionTooltip sets its max-height
+   when the tooltip would be taller than the window. overscroll-behavior keeps
+   the D365 page from scrolling once the list reaches its end. */
+.tooltip-table-wrap {
+  margin: 8px 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
 .tooltip-table {
   width: 100%;
   border-collapse: collapse;
-  margin: 8px 0;
+  margin: 0;
   font-size: 11px;
 }
 
+/* The header row stays visible while the table scrolls. A collapsed border
+   on a sticky cell scrolls away, so the shadow draws the line instead. */
 .tooltip-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: #fff;
+  box-shadow: inset 0 -1px 0 #d1d1d1;
   text-align: left;
   font-weight: 600;
   color: #333;
-  border-bottom: 1px solid #d1d1d1;
   padding: 4px 3px;
   font-size: 10px;
   text-transform: uppercase;
@@ -204,7 +227,7 @@
 .d365-inventory-tooltip.d365-inventory-tooltip-loading,
 .d365-inventory-tooltip.d365-inventory-tooltip-message {
   min-width: 0;
-  max-width: 320px;
+  max-width: 348px;
 }
 
 .tooltip-message {

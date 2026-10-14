@@ -92,7 +92,8 @@ function inventory(rows, extra) {
 
 async function tableOf(inv, productResult) {
   const tooltip = await createTooltip(inv, productResult || null);
-  const table = tooltip.children.find(c => c.className === 'tooltip-table');
+  const wrap = tooltip.children.find(c => c.className === 'tooltip-table-wrap');
+  const table = wrap.children.find(c => c.className === 'tooltip-table');
   const [headerRow, ...bodyRows] = table.children;
   return {
     headers: headerRow.children.map(th => th.textContent),
@@ -114,7 +115,7 @@ async function tooltipOf(inv, productResult) {
   }
   return {
     header: byClass('tooltip-header')[0] && byClass('tooltip-header')[0].textContent,
-    hasTable: tooltip.children.some(x => x.className === 'tooltip-table'),
+    hasTable: tooltip.children.some(x => x.className === 'tooltip-table-wrap'),
     note: byClass('tooltip-inventory-note')[0] && byClass('tooltip-inventory-note')[0].textContent,
     timestamp: byClass('tooltip-timestamp')[0] && byClass('tooltip-timestamp')[0].textContent,
     productPairs: pairs

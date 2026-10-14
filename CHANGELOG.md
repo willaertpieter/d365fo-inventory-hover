@@ -6,12 +6,13 @@ in git; each store package is built from its tag with `scripts/package.js` (see
 
 ## 1.3.0 (2026-10-14)
 
-A new license, and the author's name in the extension. **No new permissions**, and the extension works exactly as before.
+A new license, the author's name in the extension, and long warehouse lists that scroll. **No new permissions**.
 
 - New license. The extension stays free to use, including at work, and the source stays public, but it may no longer be redistributed, published in modified form or rebranded. See [LICENSE](LICENSE). Versions 1.2.0 and earlier remain under the MIT License.
 - The store package now includes the `LICENSE` file, so the terms travel with every installed copy.
 - Every file in the extension starts with a copyright and license notice, and the manifest links to the official repository.
-- The toolbar popup and the settings page show the author and a link to www.pwscanit.com. The links open only when clicked; the tooltip is unchanged.
+- The toolbar popup and the settings page show the author and a link to www.pwscanit.com. The links open only when clicked.
+- Fix: a long warehouse list no longer pushes the tooltip off the top of the screen. The table scrolls, with its column headers fixed, while the item number and timestamp stay in view.
 
 ## 1.2.0 (2026-09-24)
 
