@@ -776,14 +776,26 @@ function positionTooltip(tooltip, pageX, pageY) {
     tooltip.remove();
   }
   
+  // Measure at the top-left corner, where the tooltip has the full window
+  // width. Measured at the cursor near the right edge it would be squeezed,
+  // wrap differently, and change height once moved into place.
+  tooltip.style.left = '0px';
+  tooltip.style.top = '0px';
   document.body.appendChild(tooltip);
-  
+
+  // The visible area excluding scrollbars; innerWidth/innerHeight include them,
+  // and a tooltip placed under a scrollbar is squeezed and changes height.
+  const viewWidth = document.documentElement.clientWidth || window.innerWidth;
+  const viewHeight = document.documentElement.clientHeight || window.innerHeight;
+  const maxHeight = viewHeight - 2 * TOOLTIP_MARGIN;
+  // Same cap as the CSS max-height (100vh), but without a horizontal scrollbar.
+  tooltip.style.maxHeight = `${maxHeight}px`;
+
   // A tooltip taller than the window would be pushed off the top. Shorten the
   // warehouse table by the overflow instead; it scrolls, with its header row
-  // fixed, while the item header and timestamp stay in view.
-  // The CSS max-height already clips the tooltip, so measure the full content
-  // height (scrollHeight, plus the border) to find the real overflow.
-  const maxHeight = window.innerHeight - 2 * TOOLTIP_MARGIN;
+  // fixed, while the item header and timestamp stay in view. The max-height
+  // already clips the tooltip, so measure the full content height
+  // (scrollHeight, plus the border) to find the real overflow.
   const fullHeight = tooltip.scrollHeight + (tooltip.offsetHeight - tooltip.clientHeight);
   const tableWrap = tooltip.querySelector('.tooltip-table-wrap');
   if (tableWrap && fullHeight > maxHeight) {
@@ -792,11 +804,11 @@ function positionTooltip(tooltip, pageX, pageY) {
   }
   const tooltipRect = tooltip.getBoundingClientRect();
 
-  if (left + tooltipRect.width > window.innerWidth) {
-    left = window.innerWidth - tooltipRect.width - TOOLTIP_MARGIN;
+  if (left + tooltipRect.width > viewWidth) {
+    left = viewWidth - tooltipRect.width - TOOLTIP_MARGIN;
   }
-  if (top + tooltipRect.height > window.innerHeight) {
-    top = window.innerHeight - tooltipRect.height - TOOLTIP_MARGIN;
+  if (top + tooltipRect.height > viewHeight) {
+    top = viewHeight - tooltipRect.height - TOOLTIP_MARGIN;
   }
   left = Math.max(TOOLTIP_MARGIN, left);
   top = Math.max(TOOLTIP_MARGIN, top);
