@@ -1,3 +1,13 @@
+/*
+ * D365FO Inventory Hover
+ * https://github.com/willaertpieter/d365fo-inventory-hover
+ * Copyright (c) 2026 Pieter Willaert. All rights reserved.
+ *
+ * Free to use. Redistributing, deploying a modified version or rebranding
+ * this software is not allowed. Removing this notice is not allowed.
+ * See the LICENSE file for the full terms.
+ */
+
 // D365 F&O renders form controls with a data-dyn-controlname attribute naming the
 // control - the same hook Microsoft's own UI test automation relies on. A lookup
 // only ever runs on a control whose name identifies it as the item number field.

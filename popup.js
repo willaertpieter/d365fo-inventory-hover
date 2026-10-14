@@ -1,3 +1,13 @@
+/*
+ * D365FO Inventory Hover
+ * https://github.com/willaertpieter/d365fo-inventory-hover
+ * Copyright (c) 2026 Pieter Willaert. All rights reserved.
+ *
+ * Free to use. Redistributing, deploying a modified version or rebranding
+ * this software is not allowed. Removing this notice is not allowed.
+ * See the LICENSE file for the full terms.
+ */
+
 // Load and display query statistics
 function loadQueryStats() {
   chrome.storage.local.get(['queryCount'], (result) => {
