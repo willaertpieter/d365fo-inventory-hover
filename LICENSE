@@ -1,21 +1,77 @@
-MIT License
+D365FO Inventory Hover License
 
-Copyright (c) 2026 Pieter Willaert
+Copyright (c) 2026 Pieter Willaert. All rights reserved.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This license applies to D365FO Inventory Hover (the "Software"), from the first
+version released after 1.2.0. Versions 1.2.0 and earlier were released under the
+MIT License, and copies of those versions remain under the MIT License.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+1. Use
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+   You may install and use the Software free of charge, for any purpose,
+   including in a business and for commercial work.
+
+2. Deployment within an organization
+
+   An organization may deploy the Software to its own employees and
+   contractors, either from the official store listing or as a package built,
+   unmodified, from a tagged release in the official repository
+   (https://github.com/willaertpieter/d365fo-inventory-hover).
+
+3. Reading and changing the source
+
+   You may read, review and audit the source code. You may change it to test a
+   fix or an improvement, and to propose that change to the official
+   repository.
+
+4. What is not allowed
+
+   Without written permission from the copyright holder, you may not:
+
+   a. publish, sell, rent, sublicense or otherwise distribute the Software, or a
+      modified version of it, to anyone outside your organization, including
+      through a browser extension store, a website or a download link;
+   b. deploy a modified version of the Software, other than a change you are
+      testing under section 3;
+   c. remove, hide or replace the name "D365FO Inventory Hover", its icon, the
+      author's name or this copyright notice, or add another party's name or
+      logo to the Software;
+   d. present the Software, or a modified version of it, as your own product or
+      as the product of anyone other than the copyright holder.
+
+   Linking to the official store listing or the official repository is always
+   allowed.
+
+5. Contributions
+
+   If you submit a change to the official repository, you license it to the
+   copyright holder under this license, and you allow the copyright holder to
+   release it under any other license.
+
+6. Name and icon
+
+   The name "D365FO Inventory Hover" and its icon identify the official
+   Software. This license does not grant any right to use them, except to refer
+   to the official Software.
+
+7. Termination
+
+   If you break this license, your rights under it end automatically. They are
+   restored if you fix the breach within 30 days of being told about it, unless
+   you have been told about a breach of this license before.
+
+8. Other arrangements
+
+   For permission to do something this license does not allow, such as a
+   customized or branded version for your organization, open an issue in the
+   official repository.
+
+9. No warranty
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.

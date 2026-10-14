@@ -80,9 +80,9 @@ This extension runs inside an authenticated F&O session, so you shouldn't have t
 
 **Verifiable releases.** Each store package is built reproducibly from a git tag with `scripts/package.js` and published with SHA-256 checksums. `scripts/verify.js` checks that the copy installed in your browser is exactly the tagged source; see [SECURITY.md](SECURITY.md#checking-a-release). If an update ever needs new permissions, your browser disables the extension and asks you first.
 
-**Open source.** MIT licensed. The extension is about 2,700 lines of plain JavaScript plus two HTML pages and a stylesheet, with no build step and no dependencies, so it can be read in an afternoon.
+**Source available.** The full source is published here. The extension is about 2,700 lines of plain JavaScript plus two HTML pages and a stylesheet, with no build step and no dependencies, so it can be read in an afternoon.
 
-Organisations can pin or restrict extensions with the Microsoft Edge policies `ExtensionSettings`, `ExtensionInstallAllowlist` and `ExtensionInstallForcelist`, or build and distribute a version they have reviewed themselves.
+Organisations can pin or restrict extensions with the Microsoft Edge policies `ExtensionSettings`, `ExtensionInstallAllowlist` and `ExtensionInstallForcelist`, or build an unmodified version from a tagged release and deploy that to their own users.
 
 ### Permissions
 
@@ -249,4 +249,10 @@ This writes `dist/d365fo-inventory-hover-<version>.zip` and `dist/SHA256SUMS.txt
 
 ## License
 
-[MIT](LICENSE) © 2026 Pieter Willaert
+Free to use, including at work. You may read the source, deploy the extension within your organization and propose changes, but you may not redistribute it, publish a modified version or rebrand it. See [LICENSE](LICENSE) for the exact terms.
+
+The name "D365FO Inventory Hover" and its icon identify the official extension and are not licensed for use by forks or copies.
+
+Versions 1.2.0 and earlier were released under the MIT License.
+
+© 2026 Pieter Willaert
