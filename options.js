@@ -1,3 +1,13 @@
+/*
+ * D365FO Inventory Hover
+ * https://github.com/willaertpieter/d365fo-inventory-hover
+ * Copyright (c) 2026 Pieter Willaert. All rights reserved.
+ *
+ * Free to use. Redistributing, deploying a modified version or rebranding
+ * this software is not allowed. Removing this notice is not allowed.
+ * See the LICENSE file for the full terms.
+ */
+
 // Settings page for the D365FO Inventory Hover extension.
 //
 // Division of labour with the toolbar popup: this page holds *configuration*

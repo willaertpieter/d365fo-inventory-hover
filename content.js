@@ -1,3 +1,13 @@
+/*
+ * D365FO Inventory Hover
+ * https://github.com/willaertpieter/d365fo-inventory-hover
+ * Copyright (c) 2026 Pieter Willaert. All rights reserved.
+ *
+ * Free to use. Redistributing, deploying a modified version or rebranding
+ * this software is not allowed. Removing this notice is not allowed.
+ * See the LICENSE file for the full terms.
+ */
+
 // D365 F&O renders form controls with a data-dyn-controlname attribute naming the
 // control - the same hook Microsoft's own UI test automation relies on. A lookup
 // only ever runs on a control whose name identifies it as the item number field.
@@ -735,7 +745,13 @@ async function createTooltip(inventory, productResult) {
     table.appendChild(tr);
   });
 
-  tooltip.appendChild(table);
+  // The table scrolls inside its own box, so a long warehouse list can be
+  // shortened to fit the window (see positionTooltip) without the header and
+  // timestamp scrolling away with it.
+  const tableWrap = document.createElement('div');
+  tableWrap.className = 'tooltip-table-wrap';
+  tableWrap.appendChild(table);
+  tooltip.appendChild(tableWrap);
 
   const timestamp = document.createElement('div');
   timestamp.className = 'tooltip-timestamp';
@@ -745,25 +761,57 @@ async function createTooltip(inventory, productResult) {
   return tooltip;
 }
 
+// Smallest height the warehouse table is shortened to, so a few rows always
+// show; anything still too tall then scrolls as a whole (max-height in CSS).
+const MIN_TABLE_HEIGHT = 120;
+const TOOLTIP_MARGIN = 10;
+
 // Position tooltip near cursor
 function positionTooltip(tooltip, pageX, pageY) {
-  let left = pageX + 10;
-  let top = pageY + 10;
+  let left = pageX + TOOLTIP_MARGIN;
+  let top = pageY + TOOLTIP_MARGIN;
 
   // Remove if already in DOM
   if (tooltip.parentNode) {
     tooltip.remove();
   }
   
+  // Measure at the top-left corner, where the tooltip has the full window
+  // width. Measured at the cursor near the right edge it would be squeezed,
+  // wrap differently, and change height once moved into place.
+  tooltip.style.left = '0px';
+  tooltip.style.top = '0px';
   document.body.appendChild(tooltip);
-  
+
+  // The visible area excluding scrollbars; innerWidth/innerHeight include them,
+  // and a tooltip placed under a scrollbar is squeezed and changes height.
+  const viewWidth = document.documentElement.clientWidth || window.innerWidth;
+  const viewHeight = document.documentElement.clientHeight || window.innerHeight;
+  const maxHeight = viewHeight - 2 * TOOLTIP_MARGIN;
+  // Same cap as the CSS max-height (100vh), but without a horizontal scrollbar.
+  tooltip.style.maxHeight = `${maxHeight}px`;
+
+  // A tooltip taller than the window would be pushed off the top. Shorten the
+  // warehouse table by the overflow instead; it scrolls, with its header row
+  // fixed, while the item header and timestamp stay in view. The max-height
+  // already clips the tooltip, so measure the full content height
+  // (scrollHeight, plus the border) to find the real overflow.
+  const fullHeight = tooltip.scrollHeight + (tooltip.offsetHeight - tooltip.clientHeight);
+  const tableWrap = tooltip.querySelector('.tooltip-table-wrap');
+  if (tableWrap && fullHeight > maxHeight) {
+    const excess = fullHeight - maxHeight;
+    tableWrap.style.maxHeight = `${Math.max(MIN_TABLE_HEIGHT, tableWrap.offsetHeight - excess)}px`;
+  }
   const tooltipRect = tooltip.getBoundingClientRect();
-  if (left + tooltipRect.width > window.innerWidth) {
-    left = window.innerWidth - tooltipRect.width - 10;
+
+  if (left + tooltipRect.width > viewWidth) {
+    left = viewWidth - tooltipRect.width - TOOLTIP_MARGIN;
   }
-  if (top + tooltipRect.height > window.innerHeight) {
-    top = window.innerHeight - tooltipRect.height - 10;
+  if (top + tooltipRect.height > viewHeight) {
+    top = viewHeight - tooltipRect.height - TOOLTIP_MARGIN;
   }
+  left = Math.max(TOOLTIP_MARGIN, left);
+  top = Math.max(TOOLTIP_MARGIN, top);
 
   tooltip.style.left = `${left}px`;
   tooltip.style.top = `${top}px`;

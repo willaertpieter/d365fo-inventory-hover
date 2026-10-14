@@ -35,6 +35,8 @@ For each lookup it makes these requests, all to the **same environment the page 
 
 These are the only network requests in the extension. You can see every one of them in the popup's **Recent queries** log, and in your browser's DevTools (Network tab). The popup, settings page and background worker are additionally blocked from making any network request at all by the extension's content security policy (`connect-src 'none'` in `manifest.json`).
 
+The popup and the settings page link to the author's website (www.pwscanit.com) and to the official repository. These open in a normal browser tab, and only when you click them.
+
 ## What it stores, where, and for how long
 
 | What | Where | Kept for | How to remove |
